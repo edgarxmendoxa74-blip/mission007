@@ -7,7 +7,57 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// supabase-js decides when to refresh the login token using the device clock.
+// On a device whose clock or time zone is wrong it keeps sending an expired
+// token, and every request (even public menu reads) fails with 401 PGRST303.
+// When that happens, refresh the session once and retry; if the refresh fails,
+// drop the stale local session so public data still loads.
+let refreshing: Promise<string | null> | null = null;
+
+const refreshAccessToken = () => {
+  refreshing ??= supabase.auth.refreshSession()
+    .then(async ({ data, error }) => {
+      if (error || !data.session) {
+        await supabase.auth.signOut({ scope: 'local' });
+        return null;
+      }
+      return data.session.access_token;
+    })
+    .finally(() => {
+      refreshing = null;
+    });
+  return refreshing;
+};
+
+const isExpiredJwt = async (response: Response) => {
+  if (response.status !== 401) return false;
+  try {
+    const body = await response.clone().json();
+    return body?.code === 'PGRST303' || /jwt expired|"exp" claim/i.test(body?.message ?? '');
+  } catch {
+    return false;
+  }
+};
+
+const fetchWithTokenRetry: typeof fetch = async (input, init) => {
+  const response = await fetch(input, init);
+  const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+  // Only data/storage calls; auth calls handle their own errors (and refresh goes through them)
+  if (!/\/(rest|storage)\/v1\//.test(url) || !(await isExpiredJwt(response))) return response;
+
+  const token = await refreshAccessToken();
+  const headers = new Headers(init?.headers);
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  } else {
+    headers.delete('Authorization');
+  }
+  return fetch(input, { ...init, headers });
+};
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  global: { fetch: fetchWithTokenRetry }
+});
 
 export type Database = {
   public: {
