@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,600;1,700&family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #050505;
+  --accent: #D4AF37;
+  --bg-main: #050505;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-teamax-dark text-teamax-primary antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.app-bg {
+  @apply bg-teamax-dark min-h-screen;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(212, 175, 55, 0.12), transparent 55%),
+    radial-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+  background-size: auto, 22px 22px;
+}
+
+[style*="--bg-image"] {
+  background-image: var(--bg-image) !important;
+}
+
+[style*="--slide-scale"] {
+  transform: scale(var(--slide-scale)) !important;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-teamax-dark;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-teamax-gold/30 rounded-full border-2 border-teamax-dark;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-teamax-gold/50;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+  @apply transition-all duration-300 ease-out;
+}
+
+button:active,
+.button-active:active {
+  transform: scale(0.97) !important;
+  opacity: 0.8 !important;
+  filter: brightness(0.9) !important;
+  transition-duration: 0s !important;
+}
+
+img {
+  @apply transition-opacity duration-500;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #111111 25%, #1c1c1c 50%, #111111 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-subtle {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s cubic-bezier(0, 0, 0.2, 1) forwards;
+  animation-delay: var(--animation-delay, 0ms);
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s infinite ease-in-out;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-pop {
+  animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hover-pop:hover {
+  transform: scale(1.02);
+  filter: brightness(1.1);
+}
+
+.gold-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.gold-rule::before,
+.gold-rule::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+}
+
+.mission-card {
+  @apply bg-teamax-surface border border-teamax-gold/30 shadow-gold;
+}
+
+.mission-input {
+  @apply w-full px-4 py-3 bg-black border border-teamax-gold/40 text-teamax-primary placeholder:text-teamax-secondary/70 focus:outline-none focus:border-teamax-gold rounded-none;
+}
+
+.mission-btn {
+  @apply bg-teamax-gold text-black font-bold uppercase tracking-[0.2em] hover:brightness-110 active:scale-[0.98] transition-all;
+}
+
+.mission-btn-outline {
+  @apply border border-teamax-gold text-teamax-gold bg-transparent hover:bg-teamax-gold hover:text-black font-bold uppercase tracking-[0.2em] transition-all;
+}
