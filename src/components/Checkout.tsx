@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Clock, CheckCircle2, Maximize2, X, Copy, Check } from 'lucide-react';
-import { CartItem, PaymentMethod, ServiceType } from '../types';
+import { ArrowLeft, Clock, CheckCircle2, Maximize2, X, Copy, Check, MessageCircle } from 'lucide-react';
+import { CartItem, PaymentMethod, CheckoutServiceType } from '../types';
 import { usePaymentMethods } from '../hooks/usePaymentMethods';
 import { useSiteSettings } from '../hooks/useSiteSettings';
 
 import { useOrders } from '../hooks/useOrders';
+import { buildMessengerUrl } from '../utils/messenger';
 
 interface CheckoutProps {
   cartItems: CartItem[];
@@ -13,16 +14,23 @@ interface CheckoutProps {
   onSuccess: () => void;
 }
 
+const SERVICE_TYPE_OPTIONS: { value: CheckoutServiceType; label: string; icon: string }[] = [
+  { value: 'dine-in', label: 'Dine In', icon: '🍽️' },
+  { value: 'pickup', label: 'Pickup', icon: '🚶' },
+  { value: 'delivery', label: 'Delivery', icon: '🛵' }
+];
+
 const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSuccess }) => {
   const { siteSettings } = useSiteSettings();
   const { paymentMethods } = usePaymentMethods();
-  const { createOrder } = useOrders();
+  const { createOrder } = useOrders({ autoFetch: false });
   const [step, setStep] = useState<'details' | 'payment' | 'success'>('details');
   const [customerName, setCustomerName] = useState('');
   const [contactNumber, setContactNumber] = useState('');
-  const [serviceType, setServiceType] = useState<ServiceType>('pickup');
+  const [serviceType, setServiceType] = useState<CheckoutServiceType>('pickup');
   const [address, setAddress] = useState('');
   const [landmark, setLandmark] = useState('');
+  const [tableNumber, setTableNumber] = useState('');
   const [pickupTime, setPickupTime] = useState('5-10');
   const [customTime, setCustomTime] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('gcash');
@@ -30,6 +38,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
   const [showQRModal, setShowQRModal] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -49,6 +58,9 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
   };
 
   const handlePlaceOrder = async () => {
+    // Open the Messenger tab now, while we're still inside the click handler;
+    // browsers block pop-ups opened after an await.
+    const messengerTab = messengerUrl ? window.open('', '_blank') : null;
     try {
       setIsSubmitting(true);
 
@@ -56,6 +68,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
         customerName,
         contactNumber,
         serviceType,
+        tableNumber: serviceType === 'dine-in' && tableNumber.trim() ? tableNumber.trim() : undefined,
         address: serviceType === 'delivery' ? address : undefined,
         landmark: serviceType === 'delivery' ? landmark : undefined,
         pickupTime: serviceType === 'pickup' ? (pickupTime === 'custom' ? customTime : `${pickupTime} mins`) : undefined,
@@ -68,15 +81,82 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
       const result = await createOrder(orderData);
 
       if (result.success) {
+        const orderId = result.order?.id ?? null;
+        setPlacedOrderId(orderId);
+        const url = buildMessengerUrl(siteSettings?.messenger_page_id || '', buildOrderMessage(orderId));
+        if (url) {
+          await copyOrderMessage(orderId);
+          if (messengerTab) {
+            messengerTab.opener = null;
+            messengerTab.location.href = url;
+          } else {
+            window.open(url, '_blank', 'noopener,noreferrer');
+          }
+        }
         setStep('success');
       } else {
+        messengerTab?.close();
         alert('Failed to place order: ' + result.error);
       }
     } catch (error) {
+      messengerTab?.close();
       alert('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const serviceTypeLabel = SERVICE_TYPE_OPTIONS.find(o => o.value === serviceType)?.label ?? serviceType;
+
+  const buildOrderMessage = (orderId: string | null = placedOrderId) => {
+    const lines: string[] = [];
+    lines.push(`NEW ORDER${orderId ? ` #${orderId.slice(0, 8).toUpperCase()}` : ''}`);
+    lines.push(`Name: ${customerName}`);
+    lines.push(`Contact: ${contactNumber}`);
+    lines.push(`Service: ${serviceTypeLabel}`);
+    if (serviceType === 'dine-in' && tableNumber.trim()) lines.push(`Table: ${tableNumber.trim()}`);
+    if (serviceType === 'pickup') lines.push(`Pickup Time: ${pickupTime === 'custom' ? customTime : `${pickupTime} mins`}`);
+    if (serviceType === 'delivery') {
+      lines.push(`Address: ${address}`);
+      if (landmark) lines.push(`Landmark: ${landmark}`);
+    }
+    lines.push('');
+    lines.push('Items:');
+    cartItems.forEach(item => {
+      const details = [
+        item.selectedVariation?.name,
+        item.selectedFlavor,
+        item.selectedDrinkUpgrade ? `Drink: ${item.selectedDrinkUpgrade.name}` : undefined,
+        item.serviceType
+      ].filter(Boolean).join(', ');
+      lines.push(`• ${item.quantity}x ${item.name}${details ? ` (${details})` : ''} — ₱${(item.totalPrice || 0) * item.quantity}`);
+      if (item.selectedAddOns && item.selectedAddOns.length > 0) {
+        lines.push(`   + ${item.selectedAddOns.map(a => (a.quantity && a.quantity > 1 ? `${a.name} x${a.quantity}` : a.name)).join(', ')}`);
+      }
+    });
+    lines.push('');
+    lines.push(`Total: ₱${totalPrice || 0}`);
+    lines.push(`Payment: ${selectedPaymentMethod?.name || paymentMethod}`);
+    if (notes.trim()) lines.push(`Notes: ${notes.trim()}`);
+    return lines.join('\n');
+  };
+
+  const messengerUrl = buildMessengerUrl(siteSettings?.messenger_page_id || '', buildOrderMessage());
+
+  // The prefilled text isn't supported on every device, so also copy it for pasting
+  const copyOrderMessage = async (orderId: string | null = placedOrderId) => {
+    try {
+      await navigator.clipboard.writeText(buildOrderMessage(orderId));
+      setIsCopied(true);
+    } catch {
+      // Clipboard can be unavailable (e.g. insecure context); the link still opens
+    }
+  };
+
+  const handleSendViaMessenger = async () => {
+    if (!messengerUrl) return;
+    await copyOrderMessage();
+    window.open(messengerUrl, '_blank', 'noopener,noreferrer');
   };
 
   const isDetailsValid = customerName.trim() && contactNumber.trim() &&
@@ -104,13 +184,30 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-teamax-secondary font-bold uppercase tracking-widest text-[10px]">Service</span>
-              <span className="text-teamax-gold font-bold capitalize">{serviceType}</span>
+              <span className="text-teamax-gold font-bold">{serviceTypeLabel}{serviceType === 'dine-in' && tableNumber.trim() ? ` · Table ${tableNumber.trim()}` : ''}</span>
             </div>
           </div>
 
+          {messengerUrl && (
+            <div className="mb-4 space-y-2">
+              <button
+                onClick={handleSendViaMessenger}
+                className="w-full py-4 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 bg-[#0084FF] hover:bg-[#0074e0] text-white transition-colors"
+              >
+                <MessageCircle className="h-5 w-5" />
+                Open Messenger Again
+              </button>
+              <p className="text-[11px] text-teamax-secondary">
+                {isCopied
+                  ? 'Order details copied — paste them in the chat if the message is empty, then tap send.'
+                  : 'Messenger didn’t open? Tap above to send your order details to our Page.'}
+              </p>
+            </div>
+          )}
+
           <button
             onClick={onSuccess}
-            className="mission-btn w-full py-4 text-xs"
+            className={`${messengerUrl ? 'mission-btn-outline' : 'mission-btn'} w-full py-4 text-xs`}
           >
             Back to Menu
           </button>
@@ -122,7 +219,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
   if (step === 'details') {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="flex items-center mb-8">
+        <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-0 mb-6 sm:mb-8">
           <button
             type="button"
             onClick={onBack}
@@ -131,7 +228,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
             <ArrowLeft className="h-5 w-5" />
             <span>Back to Cart</span>
           </button>
-          <h1 className="text-3xl font-display font-semibold text-teamax-gold ml-8 tracking-[0.08em]">Order Details</h1>
+          <h1 className="text-2xl sm:text-3xl font-display font-semibold text-teamax-gold sm:ml-8 tracking-[0.08em]">Order Details</h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -203,15 +300,12 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
               {/* Service Type */}
               <div>
                 <label className="block text-sm font-medium text-teamax-gold mb-3">Service Type *</label>
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { value: 'pickup', label: 'Pickup', icon: '🚶' },
-                    { value: 'delivery', label: 'Delivery', icon: '🛵' }
-                  ].map((option) => (
+                <div className="grid grid-cols-3 gap-3">
+                  {SERVICE_TYPE_OPTIONS.map((option) => (
                     <button
                       key={option.value}
                       type="button"
-                      onClick={() => setServiceType(option.value as ServiceType)}
+                      onClick={() => setServiceType(option.value)}
                       className={`p-4 border transition-all duration-200 flex flex-col items-center justify-center ${serviceType === option.value
                         ? 'border-teamax-gold bg-teamax-gold text-black shadow-gold'
                         : 'border-teamax-gold/30 bg-black text-teamax-secondary hover:border-teamax-gold'
@@ -225,6 +319,20 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
               </div>
 
 
+
+              {/* Dine-in Table Number */}
+              {serviceType === 'dine-in' && (
+                <div>
+                  <label className="block text-sm font-medium text-teamax-gold mb-2">Table Number</label>
+                  <input
+                    type="text"
+                    value={tableNumber}
+                    onChange={(e) => setTableNumber(e.target.value)}
+                    className="mission-input"
+                    placeholder="e.g., 5 (leave blank if not seated yet)"
+                  />
+                </div>
+              )}
 
               {/* Pickup Time Selection */}
               {serviceType === 'pickup' && (
@@ -340,7 +448,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
   // Payment Step
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="flex items-center mb-8">
+      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-0 mb-6 sm:mb-8">
         <button
           type="button"
           onClick={(e) => {
@@ -352,7 +460,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
           <ArrowLeft className="h-5 w-5" />
           <span>Back to Details</span>
         </button>
-        <h1 className="text-3xl font-display font-semibold text-teamax-gold ml-8 tracking-[0.08em]">Payment</h1>
+        <h1 className="text-2xl sm:text-3xl font-display font-semibold text-teamax-gold sm:ml-8 tracking-[0.08em]">Payment</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -495,7 +603,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
             <div className="bg-black border border-teamax-gold/20 p-4">
               <h4 className="font-medium text-teamax-gold mb-2">Cash on Delivery</h4>
               <p className="text-sm text-teamax-secondary">
-                Please prepare exact amount. You will pay when you {serviceType === 'pickup' ? 'pick up' : 'receive'} your order.
+                Please prepare exact amount. {serviceType === 'dine-in' ? 'You will pay at the counter.' : `You will pay when you ${serviceType === 'pickup' ? 'pick up' : 'receive'} your order.`}
               </p>
             </div>
           )}
@@ -511,7 +619,10 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
               <h4 className="font-medium text-teamax-gold mb-2">Customer Details</h4>
               <p className="text-sm text-teamax-secondary">Name: {customerName}</p>
               <p className="text-sm text-teamax-secondary">Contact: {contactNumber}</p>
-              <p className="text-sm text-teamax-secondary">Service: {serviceType.charAt(0).toUpperCase() + serviceType.slice(1)}</p>
+              <p className="text-sm text-teamax-secondary">Service: {serviceTypeLabel}</p>
+              {serviceType === 'dine-in' && tableNumber.trim() && (
+                <p className="text-sm text-teamax-secondary">Table: {tableNumber.trim()}</p>
+              )}
               {serviceType === 'delivery' && (
                 <>
                   <p className="text-sm text-teamax-secondary">Address: {address}</p>
@@ -565,16 +676,21 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
               handlePlaceOrder();
             }}
             disabled={isSubmitting}
-            className={`w-full py-4 font-bold text-lg uppercase tracking-widest ${isSubmitting
+            className={`w-full py-4 font-bold text-lg uppercase tracking-widest flex items-center justify-center gap-2 ${isSubmitting
               ? 'border border-teamax-gold/20 bg-black text-teamax-secondary cursor-not-allowed'
-              : 'mission-btn'
+              : messengerUrl
+                ? 'bg-[#0084FF] hover:bg-[#0074e0] text-white transition-colors'
+                : 'mission-btn'
               }`}
           >
-            {isSubmitting ? 'Placing Order...' : 'Confirm & Place Order'}
+            {messengerUrl && !isSubmitting && <MessageCircle className="h-5 w-5" />}
+            {isSubmitting ? 'Sending Order...' : messengerUrl ? 'Send Order via Messenger' : 'Confirm & Place Order'}
           </button>
 
           <p className="text-xs text-teamax-secondary text-center mt-3">
-            Your order will be saved and processed by our team.
+            {messengerUrl
+              ? 'Your order is saved and Messenger opens with your order details — just tap send.'
+              : 'Your order will be saved and processed by our team.'}
           </p>
         </div>
       </div>

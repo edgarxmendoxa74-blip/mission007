@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Trash2, Plus, Minus, ArrowLeft } from 'lucide-react';
-import { CartItem } from '../types';
+import { CartItem, LineItemServiceType, MealMode } from '../types';
 
 interface CartProps {
   cartItems: CartItem[];
@@ -11,6 +11,16 @@ interface CartProps {
   onContinueShopping: () => void;
   onCheckout: () => void;
 }
+
+const MEAL_MODE_LABEL: Record<MealMode, string> = {
+  'ala-carte': 'Ala Carte',
+  'mission-set': 'Mission Sets'
+};
+
+const SERVICE_LABEL: Record<LineItemServiceType, string> = {
+  'DINE-IN': 'Having Here',
+  'TAKE-AWAY': 'Take Away'
+};
 
 const Cart: React.FC<CartProps> = ({
   cartItems,
@@ -42,7 +52,7 @@ const Cart: React.FC<CartProps> = ({
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 pb-24">
-      <div className="flex items-center justify-between mb-10">
+      <div className="flex flex-wrap items-center justify-between gap-y-4 mb-8 sm:mb-10">
         <button
           onClick={onContinueShopping}
           className="flex items-center space-x-2 text-teamax-secondary hover:text-teamax-gold transition-all group"
@@ -50,7 +60,7 @@ const Cart: React.FC<CartProps> = ({
           <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
           <span className="font-bold uppercase tracking-widest text-xs">Back to Menu</span>
         </button>
-        <h1 className="text-3xl md:text-4xl font-display font-bold text-teamax-gold tracking-[0.12em]">Your Cart</h1>
+        <h1 className="order-last w-full text-center sm:order-none sm:w-auto text-3xl md:text-4xl font-display font-bold text-teamax-gold tracking-[0.12em]">Your Cart</h1>
         <button
           onClick={clearCart}
           className="text-red-400 hover:text-red-300 transition-colors font-bold uppercase tracking-widest text-xs"
@@ -61,28 +71,52 @@ const Cart: React.FC<CartProps> = ({
 
       <div className="mission-card overflow-hidden mb-8">
         {cartItems.map((item, index) => (
-          <div key={item.id} className={`p-8 ${index !== cartItems.length - 1 ? 'border-b border-teamax-gold/20' : ''} hover:bg-white/5 transition-colors`}>
+          <div
+            key={item.id}
+            className={`p-6 sm:p-8 ${index !== cartItems.length - 1 ? 'border-b border-teamax-gold/20' : ''} hover:bg-white/5 transition-colors`}
+          >
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="flex-1">
-                <h3 className="text-xl font-display font-bold text-teamax-gold mb-2">{item.name}</h3>
-                <div className="space-y-1">
+                <h3 className="text-xl font-display font-bold text-teamax-gold mb-3">{item.name}</h3>
+                <div className="space-y-1.5">
+                  {item.mealMode && (
+                    <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">
+                      Meal Mode: <span className="text-teamax-gold">{MEAL_MODE_LABEL[item.mealMode]}</span>
+                    </p>
+                  )}
                   {item.selectedVariation && (
-                    <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">Variation: <span className="text-teamax-gold">{item.selectedVariation.name}</span></p>
+                    <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">
+                      Variation: <span className="text-teamax-gold">{item.selectedVariation.name}</span>
+                    </p>
+                  )}
+                  {item.selectedDrinkUpgrade && (
+                    <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">
+                      Set Drink: <span className="text-teamax-gold">{item.selectedDrinkUpgrade.name} · +₱{item.selectedDrinkUpgrade.price.toFixed(2)}</span>
+                    </p>
                   )}
                   {item.selectedFlavor && (
-                    <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">Flavor: <span className="text-teamax-gold">{item.selectedFlavor}</span></p>
+                    <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">
+                      Flavor: <span className="text-teamax-gold">{item.selectedFlavor}</span>
+                    </p>
                   )}
                   {item.selectedAddOns && item.selectedAddOns.length > 0 && (
                     <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">
-                      Add-ons: <span className="text-teamax-gold">{item.selectedAddOns.map(addOn =>
-                        addOn.quantity && addOn.quantity > 1
-                          ? `${addOn.name} (x${addOn.quantity})`
-                          : addOn.name
-                      ).join(', ')}</span>
+                      Add-ons: <span className="text-teamax-gold">
+                        {item.selectedAddOns.map(addOn =>
+                          addOn.quantity && addOn.quantity > 1
+                            ? `${addOn.name} (x${addOn.quantity})`
+                            : addOn.name
+                        ).join(', ')}
+                      </span>
+                    </p>
+                  )}
+                  {item.serviceType && (
+                    <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">
+                      Service: <span className="text-teamax-gold">{SERVICE_LABEL[item.serviceType]}</span>
                     </p>
                   )}
                 </div>
-                <p className="text-lg font-bold text-teamax-gold mt-3">₱{(item.totalPrice || 0).toFixed(2)}</p>
+                <p className="text-lg font-bold text-teamax-gold mt-4">₱{(item.totalPrice || 0).toFixed(2)}</p>
               </div>
 
               <div className="flex items-center justify-between md:justify-end space-x-6">
@@ -105,7 +139,9 @@ const Cart: React.FC<CartProps> = ({
                 </div>
 
                 <div className="text-right min-w-[100px]">
-                  <p className="text-xl font-bold text-teamax-gold">₱{((item.totalPrice || 0) * (item.quantity || 0)).toFixed(2)}</p>
+                  <p className="text-xl font-bold text-teamax-gold">
+                    ₱{((item.totalPrice || 0) * (item.quantity || 0)).toFixed(2)}
+                  </p>
                 </div>
 
                 <button

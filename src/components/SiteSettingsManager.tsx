@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Save, Upload, X, Edit, Plus, Trash2 } from 'lucide-react';
+import { Save, Upload, X, Edit, Plus, Trash2, MessageCircle, ExternalLink } from 'lucide-react';
 import { useSiteSettings } from '../hooks/useSiteSettings';
 import { useImageUpload } from '../hooks/useImageUpload';
+import { normalizeMessengerPageId, buildMessengerUrl } from '../utils/messenger';
 
 const SiteSettingsManager: React.FC = () => {
   const { siteSettings, loading, updateSiteSettings } = useSiteSettings();
@@ -20,6 +21,7 @@ const SiteSettingsManager: React.FC = () => {
     address: '',
     facebook_url: '',
     facebook_handle: '',
+    messenger_page_id: '',
     site_tagline: ''
   });
   const [logoPreview, setLogoPreview] = useState<string>('');
@@ -43,6 +45,7 @@ const SiteSettingsManager: React.FC = () => {
         address: siteSettings.address,
         facebook_url: siteSettings.facebook_url,
         facebook_handle: siteSettings.facebook_handle,
+        messenger_page_id: siteSettings.messenger_page_id,
         site_tagline: siteSettings.site_tagline
       });
       setLogoPreview(siteSettings.site_logo);
@@ -136,6 +139,7 @@ const SiteSettingsManager: React.FC = () => {
         address: formData.address,
         facebook_url: formData.facebook_url,
         facebook_handle: formData.facebook_handle,
+        messenger_page_id: normalizeMessengerPageId(formData.messenger_page_id),
         site_tagline: formData.site_tagline
       });
 
@@ -144,17 +148,18 @@ const SiteSettingsManager: React.FC = () => {
       const successPopup = document.createElement('div');
       successPopup.className = 'fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-bounce-gentle';
       successPopup.innerHTML = `
-        <div class="bg-black text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-white/20 backdrop-blur-md">
-          <div class="bg-green-500 rounded-full p-1">
-            <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <div class="bg-teamax-surface text-teamax-primary px-8 py-4 rounded-none shadow-gold flex items-center gap-3 border border-teamax-gold/30 backdrop-blur-md">
+          <div class="bg-teamax-gold rounded-none p-1">
+            <svg class="h-4 w-4 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
           </div>
-          <span class="font-bold uppercase tracking-widest text-xs">Settings Saved Successfully!</span>
+          <span class="font-display font-bold uppercase tracking-widest text-xs text-teamax-gold">Settings Saved Successfully!</span>
         </div>
       `;
       document.body.appendChild(successPopup);
       setTimeout(() => successPopup.remove(), 3000);
     } catch (error) {
       console.error('Error saving site settings:', error);
+      alert('Failed to save settings. The database may be rejecting changes from the admin dashboard (check Supabase RLS policies for site_settings).');
     }
   };
 
@@ -173,6 +178,7 @@ const SiteSettingsManager: React.FC = () => {
         address: siteSettings.address,
         facebook_url: siteSettings.facebook_url,
         facebook_handle: siteSettings.facebook_handle,
+        messenger_page_id: siteSettings.messenger_page_id,
         site_tagline: siteSettings.site_tagline
       });
       setLogoPreview(siteSettings.site_logo);
@@ -186,13 +192,13 @@ const SiteSettingsManager: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl shadow-sm p-6">
+      <div className="mission-card rounded-none p-6">
         <div className="animate-pulse">
-          <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+          <div className="h-6 bg-teamax-gold/20 rounded-none w-1/4 mb-4"></div>
           <div className="space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-4 bg-teamax-gold/20 rounded-none w-3/4"></div>
+            <div className="h-4 bg-teamax-gold/20 rounded-none w-1/2"></div>
+            <div className="h-4 bg-teamax-gold/20 rounded-none w-2/3"></div>
           </div>
         </div>
       </div>
@@ -200,13 +206,13 @@ const SiteSettingsManager: React.FC = () => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6" >
+    <div className="mission-card rounded-none p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-serif font-semibold text-teamax-dark">Site Settings</h2>
+        <h2 className="text-2xl font-display font-bold text-teamax-gold tracking-[0.08em]">Site Settings</h2>
         {!isEditing ? (
           <button
             onClick={() => setIsEditing(true)}
-            className="bg-white text-black border-2 border-black px-4 py-2 rounded-lg hover:bg-gray-800 transition-all duration-200 flex items-center space-x-2 shadow-md"
+            className="mission-btn rounded-none flex items-center space-x-2"
           >
             <Edit className="h-4 w-4" />
             <span>Edit Settings</span>
@@ -215,7 +221,7 @@ const SiteSettingsManager: React.FC = () => {
           <div className="flex space-x-2">
             <button
               onClick={handleCancel}
-              className="bg-gray-500 text-black px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-200 flex items-center space-x-2"
+              className="mission-btn-outline rounded-none flex items-center space-x-2"
             >
               <X className="h-4 w-4" />
               <span>Cancel</span>
@@ -223,7 +229,7 @@ const SiteSettingsManager: React.FC = () => {
             <button
               onClick={handleSave}
               disabled={uploading}
-              className="bg-white text-black border-2 border-black px-4 py-2 rounded-lg hover:bg-gray-800 transition-all duration-200 flex items-center space-x-2 disabled:opacity-50 shadow-md"
+              className="mission-btn rounded-none flex items-center space-x-2 disabled:opacity-50"
             >
               <Save className="h-4 w-4" />
               <span>{uploading ? 'Saving...' : 'Save Changes'}</span>
@@ -235,11 +241,11 @@ const SiteSettingsManager: React.FC = () => {
       <div className="space-y-6">
         {/* Site Logo */}
         <div>
-          <label className="block text-sm font-medium text-black mb-2">
+          <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">
             Site Logo
           </label>
           <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-none overflow-hidden bg-black border border-teamax-gold/30 flex items-center justify-center">
               {logoPreview ? (
                 <img
                   src={logoPreview}
@@ -247,7 +253,7 @@ const SiteSettingsManager: React.FC = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="text-2xl text-gray-400">☕</div>
+                <div className="text-2xl text-teamax-secondary">☕</div>
               )}
             </div>
             {isEditing && (
@@ -261,7 +267,7 @@ const SiteSettingsManager: React.FC = () => {
                 />
                 <label
                   htmlFor="logo-upload"
-                  className="bg-white text-black border-2 border-black px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 flex items-center space-x-2 cursor-pointer border border-black shadow-sm"
+                  className="mission-btn-outline rounded-none flex items-center space-x-2 cursor-pointer"
                 >
                   <Upload className="h-4 w-4" />
                   <span>Upload Logo</span>
@@ -274,7 +280,7 @@ const SiteSettingsManager: React.FC = () => {
         {/* Site Name & Tagline */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-black mb-2">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">
               Site Name
             </label>
             {isEditing ? (
@@ -283,15 +289,15 @@ const SiteSettingsManager: React.FC = () => {
                 name="site_name"
                 value={formData.site_name}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                className="mission-input"
                 placeholder="Enter site name"
               />
             ) : (
-              <p className="text-lg font-medium text-black">{siteSettings?.site_name}</p>
+              <p className="text-lg font-medium text-teamax-primary">{siteSettings?.site_name}</p>
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-black mb-2">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">
               Site Tagline
             </label>
             {isEditing ? (
@@ -300,18 +306,18 @@ const SiteSettingsManager: React.FC = () => {
                 name="site_tagline"
                 value={formData.site_tagline}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                className="mission-input"
                 placeholder="e.g., Milk Tea Hub"
               />
             ) : (
-              <p className="text-lg font-medium text-black">{siteSettings?.site_tagline}</p>
+              <p className="text-lg font-medium text-teamax-primary">{siteSettings?.site_tagline}</p>
             )}
           </div>
         </div>
 
         {/* Site Description (About) */}
         <div>
-          <label className="block text-sm font-medium text-black mb-2">
+          <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">
             About Section / Description
           </label>
           {isEditing ? (
@@ -320,22 +326,22 @@ const SiteSettingsManager: React.FC = () => {
               value={formData.site_description}
               onChange={handleInputChange}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+              className="mission-input"
               placeholder="Enter about section text"
             />
           ) : (
-            <p className="text-black">{siteSettings?.site_description}</p>
+            <p className="text-teamax-primary">{siteSettings?.site_description}</p>
           )}
         </div>
 
         {/* Hero Slides Management */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-black">Hero Slides</h3>
+            <h3 className="text-lg font-display font-bold text-teamax-gold tracking-[0.08em]">Hero Slides</h3>
             {isEditing && (
               <button
                 onClick={handleAddSlide}
-                className="flex items-center gap-2 text-sm bg-white text-black border-2 border-black px-3 py-1.5 rounded-lg hover:bg-gray-800 transition-colors"
+                className="mission-btn-outline rounded-none flex items-center gap-2 text-sm"
               >
                 <Plus className="w-4 h-4" />
                 Add Slide
@@ -345,11 +351,11 @@ const SiteSettingsManager: React.FC = () => {
 
           <div className="space-y-6">
             {heroSlides.map((slide, index) => (
-              <div key={index} className="bg-gray-50 border border-gray-200 rounded-xl p-4 relative">
+              <div key={index} className="bg-black border border-teamax-gold/20 rounded-none p-4 relative">
                 {isEditing && heroSlides.length > 1 && (
                   <button
                     onClick={() => handleRemoveSlide(index)}
-                    className="absolute top-4 right-4 text-red-500 hover:text-red-700 p-1 hover:bg-red-50 rounded-full transition-colors"
+                    className="absolute top-4 right-4 text-teamax-gold hover:text-teamax-gold/70 p-1 hover:bg-teamax-gold/10 rounded-none transition-colors"
                     title="Remove slide"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -359,21 +365,21 @@ const SiteSettingsManager: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Image Preview & Upload */}
                   <div className="col-span-1">
-                    <label className="block text-xs font-medium text-gray-500 mb-2">Slide Image</label>
-                    <div className="w-full h-32 rounded-lg overflow-hidden bg-gray-200 border border-gray-300 relative group">
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">Slide Image</label>
+                    <div className="w-full h-32 rounded-none overflow-hidden bg-black border border-teamax-gold/30 relative group">
                       <img
                         src={slide.url}
                         alt={`Slide ${index + 1}`}
                         className="w-full h-full object-cover"
                       />
                       {isEditing && (
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <label
                             htmlFor={`slide-upload-${index}`}
-                            className="cursor-pointer p-2 bg-white rounded-full shadow-lg hover:bg-gray-100"
+                            className="cursor-pointer p-2 bg-teamax-surface border border-teamax-gold/30 rounded-none shadow-gold hover:bg-teamax-gold/10"
                             title="Update slide image"
                           >
-                            <Upload className="w-4 h-4 text-black" />
+                            <Upload className="w-4 h-4 text-teamax-gold" />
                           </label>
                           <input
                             id={`slide-upload-${index}`}
@@ -389,7 +395,7 @@ const SiteSettingsManager: React.FC = () => {
 
                   {/* Slide Content - Removed fields as requested */}
                   <div className="col-span-1 md:col-span-2 flex items-center">
-                    <p className="text-sm text-gray-500 italic">This slide will display as a background image in the hero section.</p>
+                    <p className="text-sm text-teamax-secondary italic">This slide will display as a background image in the hero section.</p>
                   </div>
                 </div>
               </div>
@@ -400,7 +406,7 @@ const SiteSettingsManager: React.FC = () => {
         {/* Store Hours & Contact */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-black mb-2">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">
               Store Hours
             </label>
             {isEditing ? (
@@ -409,15 +415,15 @@ const SiteSettingsManager: React.FC = () => {
                 name="store_hours"
                 value={formData.store_hours}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                className="mission-input"
                 placeholder="e.g., 06:00 AM - 10:00 PM"
               />
             ) : (
-              <p className="text-lg font-medium text-black">{siteSettings?.store_hours}</p>
+              <p className="text-lg font-medium text-teamax-primary">{siteSettings?.store_hours}</p>
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-black mb-2">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">
               Contact Number
             </label>
             {isEditing ? (
@@ -426,18 +432,18 @@ const SiteSettingsManager: React.FC = () => {
                 name="contact_number"
                 value={formData.contact_number}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                className="mission-input"
                 placeholder="e.g., 0945 210 6254"
               />
             ) : (
-              <p className="text-lg font-medium text-black">{siteSettings?.contact_number}</p>
+              <p className="text-lg font-medium text-teamax-primary">{siteSettings?.contact_number}</p>
             )}
           </div>
         </div>
 
         {/* Physical Address */}
         <div>
-          <label className="block text-sm font-medium text-black mb-2">
+          <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">
             Physical Address
           </label>
           {isEditing ? (
@@ -446,18 +452,18 @@ const SiteSettingsManager: React.FC = () => {
               name="address"
               value={formData.address}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+              className="mission-input"
               placeholder="Enter full address"
             />
           ) : (
-            <p className="text-black">{siteSettings?.address}</p>
+            <p className="text-teamax-primary">{siteSettings?.address}</p>
           )}
         </div>
 
         {/* Facebook Settings */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-black mb-2">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">
               Facebook Page URL
             </label>
             {isEditing ? (
@@ -466,15 +472,15 @@ const SiteSettingsManager: React.FC = () => {
                 name="facebook_url"
                 value={formData.facebook_url}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                className="mission-input"
                 placeholder="https://facebook.com/yourpage"
               />
             ) : (
-              <p className="text-black text-sm">{siteSettings?.facebook_url}</p>
+              <p className="text-teamax-primary text-sm">{siteSettings?.facebook_url}</p>
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-black mb-2">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">
               Facebook Handle
             </label>
             {isEditing ? (
@@ -483,19 +489,75 @@ const SiteSettingsManager: React.FC = () => {
                 name="facebook_handle"
                 value={formData.facebook_handle}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                className="mission-input"
                 placeholder="@yourhandle"
               />
             ) : (
-              <p className="text-black">{siteSettings?.facebook_handle}</p>
+              <p className="text-teamax-primary">{siteSettings?.facebook_handle}</p>
             )}
           </div>
+        </div>
+
+        {/* Facebook Messenger Orders */}
+        <div className="border border-teamax-gold/30 bg-black/40 p-5 space-y-4">
+          <div className="flex items-center gap-3">
+            <MessageCircle className="h-5 w-5 text-teamax-gold" />
+            <div>
+              <h3 className="text-lg font-display font-bold text-teamax-gold tracking-[0.08em]">Facebook Messenger Orders</h3>
+              <p className="text-xs text-teamax-secondary">
+                After checkout, customers send their order to this Facebook Page via Messenger.
+              </p>
+            </div>
+          </div>
+          <div>
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">
+              Facebook Page Username or Page ID
+            </label>
+            {isEditing ? (
+              <>
+                <input
+                  type="text"
+                  name="messenger_page_id"
+                  value={formData.messenger_page_id}
+                  onChange={handleInputChange}
+                  className="mission-input"
+                  placeholder="e.g., mission007cafe or 61550000000000"
+                />
+                <p className="text-[11px] text-teamax-secondary mt-2">
+                  You can paste the page link (facebook.com/yourpage or m.me/yourpage). Leave blank to turn off Messenger ordering.
+                </p>
+              </>
+            ) : (
+              <p className="text-teamax-primary">
+                {siteSettings?.messenger_page_id || <span className="text-teamax-secondary italic">Not set — Messenger ordering is off</span>}
+              </p>
+            )}
+          </div>
+          {(() => {
+            const previewId = isEditing ? formData.messenger_page_id : siteSettings?.messenger_page_id || '';
+            const url = buildMessengerUrl(previewId);
+            return url ? (
+              <div className="flex flex-wrap items-center gap-3 text-sm">
+                <span className="text-teamax-secondary">Orders go to:</span>
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-teamax-gold font-bold hover:underline"
+                >
+                  {url.replace('https://', '')}
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+                <span className="text-[11px] text-teamax-secondary">(click to test)</span>
+              </div>
+            ) : null;
+          })()}
         </div>
 
         {/* Currency Settings */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-black mb-2">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">
               Currency Symbol
             </label>
             {isEditing ? (
@@ -504,15 +566,15 @@ const SiteSettingsManager: React.FC = () => {
                 name="currency"
                 value={formData.currency}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                className="mission-input"
                 placeholder="e.g., ₱, $, €"
               />
             ) : (
-              <p className="text-lg font-medium text-black">{siteSettings?.currency}</p>
+              <p className="text-lg font-medium text-teamax-primary">{siteSettings?.currency}</p>
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-black mb-2">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">
               Currency Code
             </label>
             {isEditing ? (
@@ -521,16 +583,16 @@ const SiteSettingsManager: React.FC = () => {
                 name="currency_code"
                 value={formData.currency_code}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                className="mission-input"
                 placeholder="e.g., PHP, USD, EUR"
               />
             ) : (
-              <p className="text-lg font-medium text-black">{siteSettings?.currency_code}</p>
+              <p className="text-lg font-medium text-teamax-primary">{siteSettings?.currency_code}</p>
             )}
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

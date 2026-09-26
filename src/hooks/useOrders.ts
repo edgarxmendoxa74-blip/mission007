@@ -2,9 +2,17 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Order, OrderData } from '../types';
 
-export const useOrders = () => {
+// Items from the static smart menu use slug ids (e.g. "coffee-black-protocol"),
+// which can't go into the uuid menu_item_id column. The item name, price,
+// variation and add-ons are stored on the order line regardless.
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const toMenuItemId = (id: string) => (UUID_RE.test(id) ? id : null);
+
+// Customers can create orders but not read them (RLS), so the storefront
+// passes { autoFetch: false } to skip the admin order feed.
+export const useOrders = ({ autoFetch = true }: { autoFetch?: boolean } = {}) => {
     const [orders, setOrders] = useState<Order[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(autoFetch);
     const [error, setError] = useState<string | null>(null);
 
     const fetchOrders = async () => {
@@ -28,6 +36,7 @@ export const useOrders = () => {
     };
 
     useEffect(() => {
+        if (!autoFetch) return;
         fetchOrders();
 
         // Subscribe to real-time changes
@@ -41,20 +50,26 @@ export const useOrders = () => {
         return () => {
             supabase.removeChannel(ordersSubscription);
         };
-    }, []);
+    }, [autoFetch]);
 
 
-    const createOrder = async (orderData: OrderData) => {
+    // Storefront orders are always inserted as 'pending' (the only status anon
+    // may insert); the admin POS records walk-in sales directly as completed.
+    const createOrder = async (orderData: OrderData, status: Order['status'] = 'pending') => {
         try {
             setLoading(true);
 
-            // 1. Create the order
-            const { data: order, error: orderError } = await supabase
+            // 1. Create the order. The id is generated client-side because
+            // anonymous customers can't select the inserted row back.
+            const order = { id: crypto.randomUUID() };
+            const { error: orderError } = await supabase
                 .from('orders')
                 .insert({
+                    id: order.id,
                     customer_name: orderData.customerName,
                     contact_number: orderData.contactNumber,
                     service_type: orderData.serviceType,
+                    table_number: orderData.tableNumber,
                     address: orderData.address,
                     landmark: orderData.landmark,
                     pickup_time: orderData.pickupTime,
@@ -62,17 +77,15 @@ export const useOrders = () => {
                     reference_number: orderData.referenceNumber,
                     total_price: orderData.total,
                     notes: orderData.notes,
-                    status: 'pending'
-                })
-                .select()
-                .single();
+                    status
+                });
 
             if (orderError) throw orderError;
 
             // 2. Create the order items
             const orderItems = orderData.items.map(item => ({
                 order_id: order.id,
-                menu_item_id: item.menuItemId,
+                menu_item_id: toMenuItemId(item.menuItemId),
                 name: item.name,
                 quantity: item.quantity,
                 unit_price: item.totalPrice,
@@ -88,6 +101,7 @@ export const useOrders = () => {
 
             if (itemsError) throw itemsError;
 
+            if (autoFetch) fetchOrders();
             return { success: true, order };
         } catch (err: any) {
             return { success: false, error: err.message };

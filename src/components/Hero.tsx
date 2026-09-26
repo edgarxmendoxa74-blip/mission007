@@ -28,7 +28,6 @@ const Hero: React.FC = () => {
     setCurrentSlide((prev) => (prev - 1 + heroImages.length) % heroImages.length);
   };
 
-  const name = brandedText(siteSettings?.site_name, BRAND.name);
   const tagline = brandedText(siteSettings?.site_tagline, BRAND.tagline);
   const description = brandedText(siteSettings?.site_description, BRAND.description);
 
@@ -36,11 +35,6 @@ const Hero: React.FC = () => {
     <section className="relative min-h-[520px] md:h-[560px] flex flex-col md:flex-row overflow-hidden bg-black">
       <div className="w-full md:w-1/2 flex items-center justify-center px-8 py-12 md:py-0 z-20 order-2 md:order-1 bg-black">
         <div className="max-w-xl text-center md:text-left">
-          <img
-            src={BRAND.logo}
-            alt={name}
-            className="w-36 h-36 md:w-44 md:h-44 object-contain mx-auto md:mx-0 mb-4 drop-shadow-[0_0_24px_rgba(212,175,55,0.35)]"
-          />
           <p className="text-[10px] uppercase tracking-[0.5em] text-teamax-gold mb-3">Classified Coffee House</p>
           <h1 className="font-display font-bold mb-2 animate-fade-in tracking-[0.28em] text-teamax-gold text-4xl md:text-6xl leading-none">
             MISSION

@@ -203,7 +203,8 @@ export type Database = {
           id: string;
           customer_name: string;
           contact_number: string;
-          service_type: 'pickup' | 'delivery';
+          service_type: 'dine-in' | 'pickup' | 'delivery';
+          table_number: string | null;
           address: string | null;
           landmark: string | null;
           pickup_time: string | null;
@@ -219,7 +220,8 @@ export type Database = {
           id?: string;
           customer_name: string;
           contact_number: string;
-          service_type: 'pickup' | 'delivery';
+          service_type: 'dine-in' | 'pickup' | 'delivery';
+          table_number?: string | null;
           address?: string | null;
           landmark?: string | null;
           pickup_time?: string | null;
@@ -235,7 +237,8 @@ export type Database = {
           id?: string;
           customer_name?: string;
           contact_number?: string;
-          service_type?: 'pickup' | 'delivery';
+          service_type?: 'dine-in' | 'pickup' | 'delivery';
+          table_number?: string | null;
           address?: string | null;
           landmark?: string | null;
           pickup_time?: string | null;

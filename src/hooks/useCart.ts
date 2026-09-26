@@ -1,18 +1,40 @@
 import { useState, useCallback } from 'react';
-import { CartItem, MenuItem, Variation, AddOn } from '../types';
+import {
+  CartItem,
+  MenuItem,
+  Variation,
+  SmartVariation,
+  AddOn,
+  MealMode,
+  DrinkUpgrade,
+  LineItemServiceType
+} from '../types';
+
+export interface CartItemMeta {
+  mealMode?: MealMode;
+  selectedDrinkUpgrade?: DrinkUpgrade;
+  serviceType?: LineItemServiceType;
+}
 
 export const useCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const calculateItemPrice = (item: MenuItem, variation?: Variation, addOns?: AddOn[]) => {
-    // If a variation is selected, its price replaces the base price
+  const calculateItemPrice = (
+    item: MenuItem,
+    variation?: Variation | SmartVariation,
+    addOns?: AddOn[],
+    drinkUpgrade?: DrinkUpgrade
+  ) => {
     let price = variation ? variation.price : (item.effectivePrice || item.basePrice);
 
-    // Apply discount if active on the base item
     if (item.isOnDiscount && item.discountPrice && item.basePrice > 0) {
       const discountAmount = item.basePrice - item.discountPrice;
       price = Math.max(0, price - discountAmount);
+    }
+
+    if (drinkUpgrade) {
+      price += drinkUpgrade.price;
     }
 
     if (addOns) {
@@ -23,10 +45,16 @@ export const useCart = () => {
     return price;
   };
 
-  const addToCart = useCallback((item: MenuItem, quantity: number = 1, variation?: Variation, addOns?: AddOn[], flavor?: string) => {
-    const totalPrice = calculateItemPrice(item, variation, addOns);
+  const addToCart = useCallback((
+    item: MenuItem,
+    quantity: number = 1,
+    variation?: Variation | SmartVariation,
+    addOns?: AddOn[],
+    flavor?: string,
+    meta?: CartItemMeta
+  ) => {
+    const totalPrice = calculateItemPrice(item, variation, addOns, meta?.selectedDrinkUpgrade);
 
-    // Group add-ons by name and sum their quantities
     const groupedAddOns = (addOns || []).reduce((groups, addOn) => {
       const existing = groups.find(g => g.id === addOn.id);
       if (existing) {
@@ -39,10 +67,14 @@ export const useCart = () => {
 
     setCartItems(prev => {
       const existingItem = prev.find(cartItem =>
-        cartItem.id === item.id &&
+        cartItem.menuItemId === item.id &&
         cartItem.selectedVariation?.id === variation?.id &&
         cartItem.selectedFlavor === flavor &&
-        JSON.stringify(cartItem.selectedAddOns?.map(a => `${a.id}-${a.quantity || 1}`).sort()) === JSON.stringify(groupedAddOns?.map(a => `${a.id}-${a.quantity}`).sort())
+        cartItem.mealMode === meta?.mealMode &&
+        cartItem.selectedDrinkUpgrade?.id === meta?.selectedDrinkUpgrade?.id &&
+        cartItem.serviceType === meta?.serviceType &&
+        JSON.stringify(cartItem.selectedAddOns?.map(a => `${a.id}-${a.quantity || 1}`).sort()) ===
+        JSON.stringify(groupedAddOns?.map(a => `${a.id}-${a.quantity}`).sort())
       );
 
       if (existingItem) {
@@ -52,8 +84,22 @@ export const useCart = () => {
             : cartItem
         );
       } else {
-        const isSimpleItem = !variation && (!groupedAddOns || groupedAddOns.length === 0) && !flavor;
-        const uniqueId = isSimpleItem ? item.id : `${item.id}-${variation?.id || 'default'}-${flavor || 'none'}-${groupedAddOns?.map(a => a.id).join(',') || 'none'}-${Date.now()}`;
+        const isSimpleItem = (
+          !variation &&
+          (!groupedAddOns || groupedAddOns.length === 0) &&
+          !flavor &&
+          !meta?.mealMode &&
+          !meta?.selectedDrinkUpgrade &&
+          !meta?.serviceType
+        );
+        const metaStamp = [
+          meta?.mealMode ?? 'none',
+          meta?.selectedDrinkUpgrade?.id ?? 'none',
+          meta?.serviceType ?? 'none'
+        ].join('|');
+        const uniqueId = isSimpleItem
+          ? item.id
+          : `${item.id}-${variation?.id || 'default'}-${flavor || 'none'}-${groupedAddOns?.map(a => a.id).join(',') || 'none'}-${metaStamp}-${Date.now()}`;
         return [...prev, {
           ...item,
           id: uniqueId,
@@ -62,7 +108,10 @@ export const useCart = () => {
           selectedVariation: variation,
           selectedFlavor: flavor,
           selectedAddOns: groupedAddOns || [],
-          totalPrice
+          totalPrice,
+          mealMode: meta?.mealMode,
+          selectedDrinkUpgrade: meta?.selectedDrinkUpgrade,
+          serviceType: meta?.serviceType
         }];
       }
     });
@@ -110,6 +159,7 @@ export const useCart = () => {
     getTotalPrice,
     getTotalItems,
     openCart,
-    closeCart
+    closeCart,
+    calculateItemPrice
   };
 };

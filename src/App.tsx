@@ -1,7 +1,6 @@
 import React, { useMemo, memo } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useCart } from './hooks/useCart';
-import { useMenu } from './hooks/useMenu';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import SubNav from './components/SubNav';
@@ -11,10 +10,11 @@ import Checkout from './components/Checkout';
 import FloatingCartButton from './components/FloatingCartButton';
 import Footer from './components/Footer';
 import AdminDashboard from './components/AdminDashboard';
+import { useStorefrontMenu } from './hooks/useStorefrontMenu';
 
 function MainApp() {
   const cart = useCart();
-  const { menuItems } = useMenu();
+  const storefrontMenu = useStorefrontMenu();
   const [currentView, setCurrentView] = React.useState<'menu' | 'cart' | 'checkout'>('menu');
   const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
 
@@ -26,14 +26,13 @@ function MainApp() {
     setSelectedCategory(categoryId);
   };
 
-  // Memoize values to prevent unnecessary re-renders
   const totalItemsCount = useMemo(() => cart.getTotalItems(), [cart.cartItems]);
 
   const filteredMenuItems = useMemo(() => {
     return selectedCategory === 'all'
-      ? menuItems
-      : menuItems.filter(item => item.category === selectedCategory);
-  }, [selectedCategory, menuItems]);
+      ? storefrontMenu
+      : storefrontMenu.filter(item => item.category === selectedCategory);
+  }, [selectedCategory, storefrontMenu]);
 
   return (
     <div className="min-h-screen font-sans app-bg">

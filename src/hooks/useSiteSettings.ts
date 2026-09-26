@@ -36,6 +36,7 @@ export const useSiteSettings = () => {
         address: data.find(s => s.id === 'address')?.value || 'Purok 3 Barangay Trenchera, Tayug Pangasinan',
         facebook_url: data.find(s => s.id === 'facebook_url')?.value || '#',
         facebook_handle: data.find(s => s.id === 'facebook_handle')?.value || '@mission007',
+        messenger_page_id: data.find(s => s.id === 'messenger_page_id')?.value || '',
         site_tagline: data.find(s => s.id === 'site_tagline')?.value || BRAND.tagline,
         hero_slides: (() => {
           try {

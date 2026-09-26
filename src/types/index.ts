@@ -4,12 +4,34 @@ export interface Variation {
   price: number;
 }
 
+export interface SmartVariation extends Variation {
+  tier?: 'basic' | 'classic' | 'loaded';
+}
+
 export interface AddOn {
   id: string;
   name: string;
   price: number;
   category: string;
   quantity?: number;
+}
+
+export type MealMode = 'ala-carte' | 'mission-set';
+
+export type LineItemServiceType = 'DINE-IN' | 'TAKE-AWAY';
+
+export interface DrinkUpgrade {
+  id: string;
+  name: string;
+  price: number;
+  tier: 'basic' | 'classic' | 'loaded';
+  refProductId?: string;
+}
+
+export interface SmartCategory {
+  id: string;
+  name: string;
+  icon: string;
 }
 
 export interface MenuItem {
@@ -21,32 +43,39 @@ export interface MenuItem {
   image?: string;
   popular?: boolean;
   available?: boolean;
-  variations?: Variation[];
+  variations?: (Variation | SmartVariation)[];
   addOns?: AddOn[];
-  // Discount pricing fields
   discountPrice?: number;
   discountStartDate?: string;
   discountEndDate?: string;
   discountActive?: boolean;
-  // Computed effective price (calculated in the app)
   effectivePrice?: number;
   isOnDiscount?: boolean;
   flavors?: string[];
+  orderingMode?: 'mission-meal' | 'simple';
+  mealOrderTypes?: MealMode[];
+  drinkUpgrades?: DrinkUpgrade[];
+  serviceTypePrompt?: boolean;
+  subCategory?: string;
 }
 
 export interface CartItem extends MenuItem {
-  menuItemId: string; // Original database UUID
+  menuItemId: string;
   quantity: number;
-  selectedVariation?: Variation;
+  selectedVariation?: Variation | SmartVariation;
   selectedFlavor?: string;
   selectedAddOns?: AddOn[];
   totalPrice: number;
+  mealMode?: MealMode;
+  selectedDrinkUpgrade?: DrinkUpgrade;
+  serviceType?: LineItemServiceType;
 }
 
 export interface OrderData {
   customerName: string;
   contactNumber: string;
-  serviceType: 'pickup' | 'delivery';
+  serviceType: CheckoutServiceType;
+  tableNumber?: string;
   address?: string;
   landmark?: string;
   pickupTime?: string;
@@ -75,7 +104,8 @@ export interface Order {
   id: string;
   customer_name: string;
   contact_number: string;
-  service_type: 'pickup' | 'delivery';
+  service_type: CheckoutServiceType;
+  table_number?: string;
   address?: string;
   landmark?: string;
   pickup_time?: string;
@@ -90,7 +120,7 @@ export interface Order {
 }
 
 export type PaymentMethod = string;
-export type ServiceType = 'pickup' | 'delivery';
+export type CheckoutServiceType = 'dine-in' | 'pickup' | 'delivery';
 
 
 // Site Settings Types
@@ -117,6 +147,7 @@ export interface SiteSettings {
   address: string;
   facebook_url: string;
   facebook_handle: string;
+  messenger_page_id: string;
   site_tagline: string;
   hero_slides?: HeroSlide[];
 }

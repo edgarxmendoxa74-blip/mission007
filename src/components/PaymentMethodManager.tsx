@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Save, X, ArrowLeft, CreditCard, Maximize2, CheckCircle2 } from 'lucide-react';
 import { usePaymentMethods, PaymentMethod } from '../hooks/usePaymentMethods';
 import ImageUpload from './ImageUpload';
+import { BRAND } from '../brand';
 
 interface PaymentMethodManagerProps {
   onBack: () => void;
@@ -121,33 +122,34 @@ const PaymentMethodManager: React.FC<PaymentMethodManagerProps> = ({ onBack }) =
   // Form View (Add/Edit)
   if (currentView === 'add' || currentView === 'edit') {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="bg-white shadow-sm border-b">
+      <div className="min-h-screen bg-teamax-dark app-bg">
+        <div className="bg-black border-b border-teamax-gold/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center space-x-4">
+                <img src={BRAND.logo} alt="Mission 007" className="w-10 h-10 object-contain" />
                 <button
                   onClick={handleCancel}
-                  className="flex items-center space-x-2 text-black hover:text-black transition-colors duration-200"
+                  className="flex items-center space-x-2 text-teamax-secondary hover:text-teamax-gold transition-colors duration-200"
                 >
                   <ArrowLeft className="h-5 w-5" />
                   <span>Back</span>
                 </button>
-                <h1 className="text-2xl font-playfair font-semibold text-black">
+                <h1 className="text-2xl font-display font-bold text-teamax-gold tracking-[0.08em]">
                   {currentView === 'add' ? 'Add Payment Method' : 'Edit Payment Method'}
                 </h1>
               </div>
               <div className="flex space-x-3">
                 <button
                   onClick={handleCancel}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200 flex items-center space-x-2"
+                  className="mission-btn-outline px-4 py-2 border border-teamax-gold text-teamax-gold hover:bg-teamax-gold hover:text-black transition-colors duration-200 flex items-center space-x-2 rounded-none"
                 >
                   <X className="h-4 w-4" />
                   <span>Cancel</span>
                 </button>
                 <button
                   onClick={handleSaveMethod}
-                  className="px-4 py-2 bg-green-100 text-green-600 border border-green-600 rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center space-x-2"
+                  className="mission-btn px-4 py-2 bg-teamax-gold text-black transition-colors duration-200 flex items-center space-x-2 rounded-none"
                 >
                   <Save className="h-4 w-4" />
                   <span>Save</span>
@@ -158,30 +160,30 @@ const PaymentMethodManager: React.FC<PaymentMethodManagerProps> = ({ onBack }) =
         </div>
 
         <div className="max-w-2xl mx-auto px-4 py-8">
-          <div className="bg-white rounded-xl shadow-sm p-8">
+          <div className="mission-card bg-teamax-surface border border-teamax-gold/30 shadow-gold p-8 rounded-none">
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-black mb-2">Payment Method Name *</label>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">Payment Method Name *</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => handleNameChange(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="mission-input w-full px-4 py-3 bg-black border border-teamax-gold/40 text-teamax-primary rounded-none"
                   placeholder="e.g., GCash, Maya, Bank Transfer"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-black mb-2">Method ID *</label>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">Method ID *</label>
                 <input
                   type="text"
                   value={formData.id}
                   onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="mission-input w-full px-4 py-3 bg-black border border-teamax-gold/40 text-teamax-primary rounded-none"
                   placeholder="kebab-case-id"
                   disabled={currentView === 'edit'}
                 />
-                <p className="text-xs text-black mt-1">
+                <p className="text-xs text-teamax-secondary mt-1">
                   {currentView === 'edit'
                     ? 'Method ID cannot be changed after creation'
                     : 'Use kebab-case format (e.g., "gcash", "bank-transfer")'
@@ -190,23 +192,23 @@ const PaymentMethodManager: React.FC<PaymentMethodManagerProps> = ({ onBack }) =
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-black mb-2">Account Number/Phone</label>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">Account Number/Phone</label>
                 <input
                   type="text"
                   value={formData.account_number}
                   onChange={(e) => setFormData({ ...formData, account_number: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="mission-input w-full px-4 py-3 bg-black border border-teamax-gold/40 text-teamax-primary rounded-none"
                   placeholder="09XX XXX XXXX or Account: 1234-5678-9012"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-black mb-2">Account Name *</label>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">Account Name *</label>
                 <input
                   type="text"
                   value={formData.account_name}
                   onChange={(e) => setFormData({ ...formData, account_name: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="mission-input w-full px-4 py-3 bg-black border border-teamax-gold/40 text-teamax-primary rounded-none"
                   placeholder="M&C Bakehouse"
                 />
               </div>
@@ -219,15 +221,15 @@ const PaymentMethodManager: React.FC<PaymentMethodManagerProps> = ({ onBack }) =
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-black mb-2">Sort Order</label>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">Sort Order</label>
                 <input
                   type="number"
                   value={formData.sort_order}
                   onChange={(e) => setFormData({ ...formData, sort_order: Number(e.target.value) })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="mission-input w-full px-4 py-3 bg-black border border-teamax-gold/40 text-teamax-primary rounded-none"
                   placeholder="0"
                 />
-                <p className="text-xs text-black mt-1">
+                <p className="text-xs text-teamax-secondary mt-1">
                   Lower numbers appear first in the checkout
                 </p>
               </div>
@@ -238,9 +240,9 @@ const PaymentMethodManager: React.FC<PaymentMethodManagerProps> = ({ onBack }) =
                     type="checkbox"
                     checked={formData.active}
                     onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
-                    className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                    className="w-5 h-5 rounded-lg border-2 border-teamax-gold/40 text-teamax-gold bg-black"
                   />
-                  <span className="text-sm font-medium text-black">Active Payment Method</span>
+                  <span className="text-sm font-medium text-teamax-primary">Active Payment Method</span>
                 </label>
               </div>
             </div>
@@ -252,23 +254,24 @@ const PaymentMethodManager: React.FC<PaymentMethodManagerProps> = ({ onBack }) =
 
   // List View
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-teamax-dark app-bg">
+      <div className="bg-black border-b border-teamax-gold/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
+              <img src={BRAND.logo} alt="Mission 007" className="w-10 h-10 object-contain" />
               <button
                 onClick={onBack}
-                className="flex items-center space-x-2 text-black hover:text-black transition-colors duration-200"
+                className="flex items-center space-x-2 text-teamax-secondary hover:text-teamax-gold transition-colors duration-200"
               >
                 <ArrowLeft className="h-5 w-5" />
                 <span>Dashboard</span>
               </button>
-              <h1 className="text-2xl font-playfair font-semibold text-black">Payment Methods</h1>
+              <h1 className="text-2xl font-display font-bold text-teamax-gold tracking-[0.08em]">Payment Methods</h1>
             </div>
             <button
               onClick={handleAddMethod}
-              className="flex items-center space-x-2 bg-green-100 text-green-600 border border-green-600 px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200"
+              className="mission-btn flex items-center space-x-2 bg-teamax-gold text-black px-4 py-2 rounded-none transition-colors duration-200"
             >
               <Plus className="h-4 w-4" />
               <span>Add Payment Method</span>
@@ -278,17 +281,17 @@ const PaymentMethodManager: React.FC<PaymentMethodManagerProps> = ({ onBack }) =
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="mission-card bg-teamax-surface border border-teamax-gold/30 shadow-gold overflow-hidden rounded-none">
           <div className="p-6">
-            <h2 className="text-lg font-playfair font-medium text-black mb-4">Payment Methods</h2>
+            <h2 className="text-lg font-display font-bold text-teamax-gold tracking-[0.08em] mb-4">Payment Methods</h2>
 
             {paymentMethods.length === 0 ? (
-              <div className="text-center py-8">
-                <CreditCard className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-black mb-4">No payment methods found</p>
+              <div className="mission-card bg-teamax-surface border border-teamax-gold/30 shadow-gold text-center py-8 rounded-none">
+                <CreditCard className="h-12 w-12 text-teamax-gold/50 mx-auto mb-4" />
+                <p className="text-teamax-secondary mb-4">No payment methods found</p>
                 <button
                   onClick={handleAddMethod}
-                  className="bg-green-100 text-green-600 border border-green-600 px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200"
+                  className="mission-btn bg-teamax-gold text-black px-4 py-2 rounded-none transition-colors duration-200"
                 >
                   Add First Payment Method
                 </button>
@@ -298,7 +301,7 @@ const PaymentMethodManager: React.FC<PaymentMethodManagerProps> = ({ onBack }) =
                 {paymentMethods.map((method) => (
                   <div
                     key={method.id}
-                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                    className="flex items-center justify-between p-4 bg-black border border-teamax-gold/20 rounded-none hover:bg-teamax-surface transition-colors duration-200"
                   >
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0 relative group">
@@ -307,7 +310,7 @@ const PaymentMethodManager: React.FC<PaymentMethodManagerProps> = ({ onBack }) =
                             setSelectedQRUrl(method.qr_code_url);
                             setShowQRModal(true);
                           }}
-                          className="relative block rounded-lg overflow-hidden border border-gray-300 transition-transform duration-200 hover:scale-105"
+                          className="relative block rounded-none overflow-hidden border border-teamax-gold/30 transition-transform duration-200 hover:scale-105"
                         >
                           <img
                             src={method.qr_code_url}
@@ -317,30 +320,30 @@ const PaymentMethodManager: React.FC<PaymentMethodManagerProps> = ({ onBack }) =
                               e.currentTarget.src = 'https://images.pexels.com/photos/8867482/pexels-photo-8867482.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop';
                             }}
                           />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center text-white">
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center text-teamax-gold">
                             <Maximize2 className="h-4 w-4" />
                           </div>
                         </button>
                       </div>
                       <div>
-                        <h3 className="font-medium text-black">{method.name}</h3>
-                        <p className="text-sm text-black">{method.account_number}</p>
-                        <p className="text-sm text-black">Account: {method.account_name}</p>
-                        <p className="text-xs text-gray-400">ID: {method.id} • Order: #{method.sort_order}</p>
+                        <h3 className="font-medium text-teamax-primary">{method.name}</h3>
+                        <p className="text-sm text-teamax-secondary">{method.account_number}</p>
+                        <p className="text-sm text-teamax-secondary">Account: {method.account_name}</p>
+                        <p className="text-xs text-teamax-secondary">ID: {method.id} • Order: #{method.sort_order}</p>
                       </div>
                     </div>
 
                     <div className="flex items-center space-x-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${method.active
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
+                      <span className={`px-2 py-1 rounded-none text-xs font-medium border ${method.active
+                        ? 'bg-green-500/10 text-green-400 border-green-500/30'
+                        : 'bg-red-500/10 text-red-400 border-red-500/30'
                         }`}>
                         {method.active ? 'Active' : 'Inactive'}
                       </span>
 
                       <button
                         onClick={() => handleEditMethod(method)}
-                        className="p-2 text-gray-400 hover:text-black hover:bg-gray-100 rounded transition-colors duration-200"
+                        className="mission-btn-outline p-2 border border-teamax-gold text-teamax-gold hover:bg-teamax-gold hover:text-black rounded-none transition-colors duration-200"
                         title="Edit Payment Method"
                         aria-label="Edit Payment Method"
                       >
@@ -349,7 +352,7 @@ const PaymentMethodManager: React.FC<PaymentMethodManagerProps> = ({ onBack }) =
 
                       <button
                         onClick={() => handleDeleteMethod(method.id)}
-                        className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors duration-200"
+                        className="p-2 bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white rounded-none transition-colors duration-200"
                         title="Delete Payment Method"
                         aria-label="Delete Payment Method"
                       >
@@ -367,28 +370,28 @@ const PaymentMethodManager: React.FC<PaymentMethodManagerProps> = ({ onBack }) =
       {/* QR Code Modal for Admin */}
       {showQRModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in" onClick={() => setShowQRModal(false)}>
-          <div className="relative bg-white rounded-2xl p-4 max-w-sm w-full animate-scale-in" onClick={e => e.stopPropagation()}>
+          <div className="relative mission-card bg-teamax-surface border border-teamax-gold/30 shadow-gold rounded-none p-4 max-w-sm w-full animate-scale-in" onClick={e => e.stopPropagation()}>
             <button
               onClick={() => setShowQRModal(false)}
-              className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors"
+              className="absolute -top-12 right-0 p-2 text-teamax-gold hover:text-teamax-secondary transition-colors"
               aria-label="Close QR Preview"
             >
               <X className="h-8 w-8" />
             </button>
             <div className="text-center mb-4">
-              <h3 className="text-lg font-bold text-black">QR Code Preview</h3>
+              <h3 className="text-lg font-display font-bold text-teamax-gold tracking-[0.08em]">QR Code Preview</h3>
             </div>
             <img
               src={selectedQRUrl}
               alt="QR Code Large"
-              className="w-full aspect-square rounded-xl shadow-inner object-contain"
+              className="w-full aspect-square rounded-none shadow-inner object-contain border border-teamax-gold/30"
               onError={(e) => {
                 e.currentTarget.src = 'https://images.pexels.com/photos/8867482/pexels-photo-8867482.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop';
               }}
             />
             <button
               onClick={() => setShowQRModal(false)}
-              className="w-full mt-4 py-3 bg-black text-white rounded-xl font-bold"
+              className="mission-btn w-full mt-4 py-3 bg-teamax-gold text-black rounded-none font-bold"
             >
               Close Preview
             </button>
@@ -399,11 +402,11 @@ const PaymentMethodManager: React.FC<PaymentMethodManagerProps> = ({ onBack }) =
       {/* Save Success Popup */}
       {showSaveSuccess && (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-bounce-gentle">
-          <div className="bg-black text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-white/20 backdrop-blur-md">
-            <div className="bg-green-500 rounded-full p-1">
-              <CheckCircle2 className="h-4 w-4 text-white" />
+          <div className="bg-teamax-surface text-teamax-primary px-8 py-4 rounded-none shadow-gold flex items-center gap-3 border border-teamax-gold/30 backdrop-blur-md">
+            <div className="bg-green-500/10 border border-green-500/30 p-1">
+              <CheckCircle2 className="h-4 w-4 text-green-400" />
             </div>
-            <span className="font-bold uppercase tracking-widest text-xs">Payment Method Saved!</span>
+            <span className="font-bold uppercase tracking-widest text-xs text-teamax-gold">Payment Method Saved!</span>
           </div>
         </div>
       )}
