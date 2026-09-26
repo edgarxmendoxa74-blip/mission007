@@ -111,16 +111,16 @@ ${itemsList}
                             placeholder="Search orders..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 bg-black border border-teamax-gold/30 text-teamax-primary placeholder:text-teamax-secondary/50 focus:ring-teamax-gold focus:border-teamax-gold rounded-none outline-none text-sm"
+                            className="w-full pl-10 pr-4 py-2 bg-black border border-teamax-gold/30 text-teamax-primary placeholder:text-teamax-secondary/50 focus:ring-teamax-gold focus:border-teamax-gold rounded-xl outline-none text-sm"
                         />
                     </div>
 
-                    <div className="flex items-center gap-2 bg-black border border-teamax-gold/30 rounded-none p-1">
+                    <div className="flex items-center gap-2 bg-black border border-teamax-gold/30 rounded-xl p-1">
                         {['all', 'pending', 'preparing', 'completed', 'cancelled'].map((status) => (
                             <button
                                 key={status}
                                 onClick={() => setFilterStatus(status)}
-                                className={`px-3 py-1.5 rounded-none text-[10px] font-bold uppercase tracking-widest transition-all border ${filterStatus === status
+                                className={`px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all border ${filterStatus === status
                                     ? 'mission-btn'
                                     : 'text-teamax-secondary hover:text-teamax-gold border-teamax-gold/30 hover:bg-teamax-gold/10'
                                     }`}
@@ -136,7 +136,7 @@ ${itemsList}
                 {/* Orders List */}
                 <div className="lg:col-span-2 space-y-4">
                     {filteredOrders.length === 0 ? (
-                        <div className="bg-teamax-surface border border-dashed border-teamax-gold/30 rounded-none p-12 text-center">
+                        <div className="bg-teamax-surface border border-dashed border-teamax-gold/30 rounded-xl p-12 text-center">
                             <Package className="h-12 w-12 text-teamax-secondary mx-auto mb-4" />
                             <p className="text-teamax-secondary font-display">No orders found.</p>
                         </div>
@@ -145,7 +145,7 @@ ${itemsList}
                             <div
                                 key={order.id}
                                 onClick={() => setSelectedOrder(order)}
-                                className={`group bg-teamax-surface border rounded-none p-4 transition-all duration-300 cursor-pointer hover:shadow-gold shadow-gold ${selectedOrder?.id === order.id
+                                className={`group bg-teamax-surface border rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-gold shadow-gold ${selectedOrder?.id === order.id
                                     ? 'border-teamax-gold ring-1 ring-teamax-gold'
                                     : 'border-teamax-gold/20 hover:border-teamax-gold/40'
                                     }`}
@@ -176,7 +176,7 @@ ${itemsList}
                                                 e.stopPropagation();
                                                 handleDelete(order.id);
                                             }}
-                                            className="p-2 bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white rounded-none transition-colors flex"
+                                            className="p-2 bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white rounded-xl transition-colors flex"
                                             title="Delete Order Record"
                                         >
                                             <Trash2 className="h-4 w-4" />
@@ -192,13 +192,13 @@ ${itemsList}
                 {/* Order Details Panel */}
                 <div className="lg:col-span-1">
                     {selectedOrder ? (
-                        <div className="mission-card rounded-none p-6 shadow-gold sticky top-6 space-y-6 border border-teamax-gold/20 bg-teamax-surface">
+                        <div className="mission-card rounded-xl p-6 shadow-gold sticky top-6 space-y-6 border border-teamax-gold/20 bg-teamax-surface">
                             <div className="flex items-center justify-between border-b border-teamax-gold/20 pb-4">
                                 <h3 className="font-display font-bold text-lg text-teamax-gold tracking-[0.08em]">Order Details</h3>
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={() => handleCopyOrderDetails(selectedOrder)}
-                                        className={`p-2 rounded-none transition-all duration-200 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider border ${isCopied ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'hover:bg-teamax-gold/10 text-teamax-secondary border-teamax-gold/20 hover:text-teamax-gold'}`}
+                                        className={`p-2 rounded-xl transition-all duration-200 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider border ${isCopied ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'hover:bg-teamax-gold/10 text-teamax-secondary border-teamax-gold/20 hover:text-teamax-gold'}`}
                                         title="Copy Order Summary"
                                     >
                                         {isCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
@@ -206,7 +206,7 @@ ${itemsList}
                                     </button>
                                     <button
                                         onClick={() => handleDelete(selectedOrder.id)}
-                                        className="p-2 bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white rounded-none transition-colors"
+                                        className="p-2 bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white rounded-xl transition-colors"
                                         title="Delete Order Record"
                                     >
                                         <Trash2 className="h-4 w-4" />
@@ -228,7 +228,7 @@ ${itemsList}
                                         <button
                                             key={s.id}
                                             onClick={() => handleStatusUpdate(selectedOrder.id, s.id as any)}
-                                            className={`flex items-center justify-center gap-2 py-2 px-3 rounded-none text-xs font-bold transition-all border ${selectedOrder.status === s.id
+                                            className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all border ${selectedOrder.status === s.id
                                                 ? 'mission-btn'
                                                 : 'bg-teamax-surface text-teamax-secondary border border-teamax-gold/20 hover:border-teamax-gold/40'
                                                 }`}
@@ -283,7 +283,7 @@ ${itemsList}
                                 </div>
 
                                 {selectedOrder.notes && (
-                                    <div className="flex items-start gap-3 bg-black border border-teamax-gold/10 p-3 rounded-none">
+                                    <div className="flex items-start gap-3 bg-black border border-teamax-gold/10 p-3 rounded-xl">
                                         <MessageSquare className="h-4 w-4 text-teamax-secondary mt-1" />
                                         <div>
                                             <p className="text-[10px] font-bold uppercase tracking-widest text-teamax-gold">Notes</p>
@@ -309,7 +309,7 @@ ${itemsList}
                                                 {item.add_ons && item.add_ons.length > 0 && (
                                                     <div className="flex flex-wrap gap-1 mt-1">
                                                         {item.add_ons.map((ao: any, idx: number) => (
-                                                            <span key={idx} className="bg-teamax-gold/10 text-teamax-secondary text-[8px] px-1.5 py-0.5 rounded-none border border-teamax-gold/20">
+                                                            <span key={idx} className="bg-teamax-gold/10 text-teamax-secondary text-[8px] px-1.5 py-0.5 rounded-xl border border-teamax-gold/20">
                                                                 +{ao.name}
                                                             </span>
                                                         ))}
@@ -325,14 +325,14 @@ ${itemsList}
                             </div>
 
                             <div className="pt-4 border-t border-teamax-gold/20">
-                                <div className="flex justify-between items-center bg-teamax-gold text-black p-4 rounded-none shadow-gold">
+                                <div className="flex justify-between items-center bg-teamax-gold text-black p-4 rounded-xl shadow-gold">
                                     <span className="text-[10px] font-bold uppercase tracking-widest">Grand Total</span>
                                     <span className="text-xl font-bold font-display">₱{(selectedOrder.total_price || 0)}</span>
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-teamax-surface border border-dashed border-teamax-gold/30 rounded-none p-12 text-center h-[200px] flex flex-col items-center justify-center space-y-2">
+                        <div className="bg-teamax-surface border border-dashed border-teamax-gold/30 rounded-xl p-12 text-center h-[200px] flex flex-col items-center justify-center space-y-2">
                             <ChevronRight className="h-8 w-8 text-teamax-secondary rotate-90" />
                             <p className="text-teamax-secondary text-xs font-bold uppercase tracking-widest">Select an order to view details</p>
                         </div>

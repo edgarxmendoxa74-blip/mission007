@@ -125,8 +125,8 @@ const BarList: React.FC<{ rows: { name: string; value: number }[]; format: (n: n
             <span className="text-teamax-primary truncate">{r.name}</span>
             <span className="text-teamax-secondary tabular-nums flex-shrink-0">{format(r.value)}</span>
           </div>
-          <div className="h-2 bg-black">
-            <div className="h-full bg-teamax-gold rounded-r" style={{ width: `${Math.max((r.value / max) * 100, 1)}%` }} />
+          <div className="h-2 bg-black rounded-full overflow-hidden">
+            <div className="h-full bg-teamax-gold rounded-full" style={{ width: `${Math.max((r.value / max) * 100, 1)}%` }} />
           </div>
         </li>
       ))}
@@ -229,7 +229,7 @@ const SalesAnalytics: React.FC = () => {
             <button
               key={r.value}
               onClick={() => setRange(r.value)}
-              className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest border transition-colors ${range === r.value
+              className={`rounded-xl px-4 py-2 text-[10px] font-bold uppercase tracking-widest border transition-colors ${range === r.value
                 ? 'bg-teamax-gold text-black border-teamax-gold'
                 : 'border-teamax-gold/30 text-teamax-gold hover:bg-teamax-gold/10'}`}
             >
@@ -239,7 +239,7 @@ const SalesAnalytics: React.FC = () => {
         </div>
         <button
           onClick={() => refreshOrders()}
-          className="flex items-center gap-2 self-start sm:self-auto px-4 py-2 text-[10px] font-bold uppercase tracking-widest border border-teamax-gold/30 text-teamax-secondary hover:text-teamax-gold"
+          className="rounded-xl flex items-center gap-2 self-start sm:self-auto px-4 py-2 text-[10px] font-bold uppercase tracking-widest border border-teamax-gold/30 text-teamax-secondary hover:text-teamax-gold"
         >
           <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
           Refresh
@@ -292,7 +292,7 @@ const SalesAnalytics: React.FC = () => {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {data.byStatus.map(s => (
-              <div key={s.name} className="border border-teamax-gold/20 bg-black p-4 text-center">
+              <div key={s.name} className="rounded-xl border border-teamax-gold/20 bg-black p-4 text-center">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-teamax-secondary flex items-center justify-center gap-1">
                   {s.name === 'Cancelled' && <XCircle className="h-3 w-3" />}
                   {s.name}

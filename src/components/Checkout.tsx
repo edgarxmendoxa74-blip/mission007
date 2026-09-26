@@ -166,14 +166,14 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
   if (step === 'success') {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-        <div className="bg-teamax-surface shadow-gold p-8 border border-teamax-gold/30 animate-scale-in">
+        <div className="rounded-xl bg-teamax-surface shadow-gold p-8 border border-teamax-gold/30 animate-scale-in">
           <div className="w-20 h-20 bg-teamax-gold/10 text-teamax-gold border border-teamax-gold/40 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="h-10 w-10" />
           </div>
           <h2 className="text-3xl font-display font-bold text-teamax-gold mb-2">Order Placed Successfully!</h2>
           <p className="text-teamax-secondary mb-8">Thank you, {customerName}. Your order has been received and is being processed.</p>
 
-          <div className="bg-black/40 border border-teamax-gold/20 p-6 text-left mb-8 space-y-3">
+          <div className="rounded-xl bg-black/40 border border-teamax-gold/20 p-6 text-left mb-8 space-y-3">
             <div className="flex justify-between text-sm">
               <span className="text-teamax-secondary font-bold uppercase tracking-widest text-[10px]">Total Paid</span>
               <span className="text-teamax-gold font-bold">₱{(totalPrice || 0)}</span>
@@ -306,7 +306,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
                       key={option.value}
                       type="button"
                       onClick={() => setServiceType(option.value)}
-                      className={`p-4 border transition-all duration-200 flex flex-col items-center justify-center ${serviceType === option.value
+                      className={`rounded-xl p-4 border transition-all duration-200 flex flex-col items-center justify-center ${serviceType === option.value
                         ? 'border-teamax-gold bg-teamax-gold text-black shadow-gold'
                         : 'border-teamax-gold/30 bg-black text-teamax-secondary hover:border-teamax-gold'
                         }`}
@@ -350,7 +350,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
                           key={option.value}
                           type="button"
                           onClick={() => setPickupTime(option.value)}
-                          className={`p-3 border transition-all duration-200 text-sm ${pickupTime === option.value
+                          className={`rounded-xl p-3 border transition-all duration-200 text-sm ${pickupTime === option.value
                             ? 'border-teamax-gold bg-teamax-gold text-black shadow-gold'
                             : 'border-teamax-gold/30 bg-black text-teamax-secondary hover:border-teamax-gold'
                             }`}
@@ -422,7 +422,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
                   handleProceedToPayment();
                 }}
                 disabled={!isDetailsValid}
-                className={`w-full py-4 font-bold text-lg tracking-widest uppercase ${isDetailsValid
+                className={`rounded-xl w-full py-4 font-bold text-lg tracking-widest uppercase ${isDetailsValid
                   ? 'mission-btn'
                   : 'border border-teamax-gold/20 bg-black text-teamax-secondary cursor-not-allowed'
                   }`}
@@ -473,7 +473,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
                 key={method.id}
                 type="button"
                 onClick={() => setPaymentMethod(method.id as PaymentMethod)}
-                className={`group relative p-4 border transition-all duration-300 flex items-center justify-between ${paymentMethod === method.id
+                className={`rounded-xl group relative p-4 border transition-all duration-300 flex items-center justify-between ${paymentMethod === method.id
                   ? 'border-teamax-gold bg-teamax-gold text-black shadow-gold'
                   : 'border-teamax-gold/30 bg-black text-teamax-secondary hover:border-teamax-gold'
                   }`}
@@ -497,7 +497,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
           </div>
 
           {selectedPaymentMethod && (
-            <div className="bg-black p-6 mb-6 border border-dashed border-teamax-gold/40">
+            <div className="rounded-xl bg-black p-6 mb-6 border border-dashed border-teamax-gold/40">
               <h3 className="font-medium text-teamax-gold mb-4 flex items-center">
                 <span className="w-2 h-2 bg-teamax-gold rounded-full mr-2"></span>
                 Payment Details
@@ -529,7 +529,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
                       e.preventDefault();
                       setShowQRModal(true);
                     }}
-                    className="relative block overflow-hidden shadow-xl border-2 border-teamax-gold transition-transform duration-300 hover:scale-105"
+                    className="rounded-xl relative block overflow-hidden shadow-xl border-2 border-teamax-gold transition-transform duration-300 hover:scale-105"
                   >
                     <img
                       src={selectedPaymentMethod.qr_code_url}
@@ -552,7 +552,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
 
           {showQRModal && selectedPaymentMethod && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in" onClick={() => setShowQRModal(false)}>
-              <div className="relative bg-teamax-surface border border-teamax-gold/40 p-4 max-w-sm w-full animate-scale-in" onClick={e => e.stopPropagation()}>
+              <div className="rounded-xl relative bg-teamax-surface border border-teamax-gold/40 p-4 max-w-sm w-full animate-scale-in" onClick={e => e.stopPropagation()}>
                 <button
                   onClick={() => setShowQRModal(false)}
                   className="absolute -top-12 right-0 p-2 text-teamax-gold hover:text-teamax-primary transition-colors"
@@ -572,7 +572,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
                     e.currentTarget.src = 'https://images.pexels.com/photos/8867482/pexels-photo-8867482.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop';
                   }}
                 />
-                <div className="mt-4 p-4 bg-black border border-teamax-gold/20 space-y-2">
+                <div className="rounded-xl mt-4 p-4 bg-black border border-teamax-gold/20 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-teamax-secondary">Account:</span>
                     <span className="font-bold text-teamax-gold">{selectedPaymentMethod.account_name}</span>
@@ -593,14 +593,14 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
           )}
 
           {paymentMethod !== 'cod' ? (
-            <div className="bg-black border border-teamax-gold/20 p-4">
+            <div className="rounded-xl bg-black border border-teamax-gold/20 p-4">
               <h4 className="font-medium text-teamax-gold mb-2">Digital Payment</h4>
               <p className="text-sm text-teamax-secondary">
                 Please ensure you have completed the payment via {selectedPaymentMethod?.name || 'the selected method'} before confirming your order.
               </p>
             </div>
           ) : (
-            <div className="bg-black border border-teamax-gold/20 p-4">
+            <div className="rounded-xl bg-black border border-teamax-gold/20 p-4">
               <h4 className="font-medium text-teamax-gold mb-2">Cash on Delivery</h4>
               <p className="text-sm text-teamax-secondary">
                 Please prepare exact amount. {serviceType === 'dine-in' ? 'You will pay at the counter.' : `You will pay when you ${serviceType === 'pickup' ? 'pick up' : 'receive'} your order.`}
@@ -615,7 +615,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
           </div>
 
           <div className="space-y-4 mb-6">
-            <div className="bg-black p-4 border border-teamax-gold/20">
+            <div className="rounded-xl bg-black p-4 border border-teamax-gold/20">
               <h4 className="font-medium text-teamax-gold mb-2">Customer Details</h4>
               <p className="text-sm text-teamax-secondary">Name: {customerName}</p>
               <p className="text-sm text-teamax-secondary">Contact: {contactNumber}</p>
@@ -676,7 +676,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack, onSu
               handlePlaceOrder();
             }}
             disabled={isSubmitting}
-            className={`w-full py-4 font-bold text-lg uppercase tracking-widest flex items-center justify-center gap-2 ${isSubmitting
+            className={`rounded-xl w-full py-4 font-bold text-lg uppercase tracking-widest flex items-center justify-center gap-2 ${isSubmitting
               ? 'border border-teamax-gold/20 bg-black text-teamax-secondary cursor-not-allowed'
               : messengerUrl
                 ? 'bg-[#0084FF] hover:bg-[#0074e0] text-white transition-colors'

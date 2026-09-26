@@ -66,7 +66,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
       onClick={() => setShowCustomizer(false)}
     >
       <div
-        className="relative bg-teamax-surface w-full sm:max-w-lg h-[92vh] supports-[height:100dvh]:h-[92dvh] sm:h-[90vh] sm:max-h-[90vh] overflow-hidden animate-scale-in shadow-gold-lg border border-teamax-gold/40 flex flex-col"
+        className="rounded-t-3xl sm:rounded-2xl relative bg-teamax-surface w-full sm:max-w-lg h-[92vh] supports-[height:100dvh]:h-[92dvh] sm:h-[90vh] sm:max-h-[90vh] overflow-hidden animate-scale-in shadow-gold-lg border border-teamax-gold/40 flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative h-32 sm:h-40 [@media(max-height:720px)]:h-24 w-full bg-teamax-dark shrink-0">
@@ -112,7 +112,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
   return (
     <div
-      className={`bg-teamax-surface overflow-hidden group animate-scale-in border border-teamax-gold/25 hover:border-teamax-gold/60 hover:shadow-gold transition-all duration-300 ${!item.available ? 'opacity-60' : ''}`}
+      className={`rounded-2xl bg-teamax-surface overflow-hidden group animate-scale-in border border-teamax-gold/25 hover:border-teamax-gold/60 hover:shadow-gold transition-all duration-300 ${!item.available ? 'opacity-60' : ''}`}
     >
       <div className="relative h-32 sm:h-48 bg-teamax-dark overflow-hidden">
         {item.image ? (
@@ -153,7 +153,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-2">
           <h4 className="text-sm sm:text-lg font-display font-bold text-teamax-gold leading-tight flex-1 sm:pr-2 mb-1 sm:mb-0 line-clamp-1">{item.name}</h4>
           {isCustomizable && (
-            <div className="text-[10px] text-teamax-secondary border border-teamax-gold/40 px-2 py-0.5 uppercase tracking-wider font-bold w-fit">
+            <div className="rounded-full text-[10px] text-teamax-secondary border border-teamax-gold/40 px-2 py-0.5 uppercase tracking-wider font-bold w-fit">
               Customizable
             </div>
           )}
@@ -175,17 +175,17 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             )}
 
             {item.available && (
-              <div className="flex items-center justify-between sm:justify-start gap-2 bg-black p-1 border border-teamax-gold/40 w-full sm:w-auto">
+              <div className="rounded-xl flex items-center justify-between sm:justify-start gap-2 bg-black p-1 border border-teamax-gold/40 w-full sm:w-auto">
                 <button
                   onClick={(e) => { e.stopPropagation(); setLocalQuantity(Math.max(1, localQuantity - 1)); }}
-                  className="p-1 sm:p-2 hover:bg-teamax-gold hover:text-black text-teamax-gold active:scale-90"
+                  className="rounded-lg p-1 sm:p-2 hover:bg-teamax-gold hover:text-black text-teamax-gold active:scale-90"
                 >
                   <Minus className="h-3 sm:h-4 w-3 sm:w-4" />
                 </button>
                 <span className="font-bold text-teamax-primary min-w-[16px] text-center text-xs sm:text-base">{localQuantity}</span>
                 <button
                   onClick={(e) => { e.stopPropagation(); setLocalQuantity(localQuantity + 1); }}
-                  className="p-1 sm:p-2 hover:bg-teamax-gold hover:text-black text-teamax-gold active:scale-90"
+                  className="rounded-lg p-1 sm:p-2 hover:bg-teamax-gold hover:text-black text-teamax-gold active:scale-90"
                 >
                   <Plus className="h-3 sm:h-4 w-3 sm:w-4" />
                 </button>

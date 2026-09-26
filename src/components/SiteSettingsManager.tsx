@@ -148,8 +148,8 @@ const SiteSettingsManager: React.FC = () => {
       const successPopup = document.createElement('div');
       successPopup.className = 'fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-bounce-gentle';
       successPopup.innerHTML = `
-        <div class="bg-teamax-surface text-teamax-primary px-8 py-4 rounded-none shadow-gold flex items-center gap-3 border border-teamax-gold/30 backdrop-blur-md">
-          <div class="bg-teamax-gold rounded-none p-1">
+        <div class="bg-teamax-surface text-teamax-primary px-8 py-4 rounded-2xl shadow-gold flex items-center gap-3 border border-teamax-gold/30 backdrop-blur-md">
+          <div class="bg-teamax-gold rounded-full p-1">
             <svg class="h-4 w-4 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
           </div>
           <span class="font-display font-bold uppercase tracking-widest text-xs text-teamax-gold">Settings Saved Successfully!</span>
@@ -192,13 +192,13 @@ const SiteSettingsManager: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="mission-card rounded-none p-6">
+      <div className="mission-card rounded-xl p-6">
         <div className="animate-pulse">
-          <div className="h-6 bg-teamax-gold/20 rounded-none w-1/4 mb-4"></div>
+          <div className="h-6 bg-teamax-gold/20 rounded-xl w-1/4 mb-4"></div>
           <div className="space-y-4">
-            <div className="h-4 bg-teamax-gold/20 rounded-none w-3/4"></div>
-            <div className="h-4 bg-teamax-gold/20 rounded-none w-1/2"></div>
-            <div className="h-4 bg-teamax-gold/20 rounded-none w-2/3"></div>
+            <div className="h-4 bg-teamax-gold/20 rounded-xl w-3/4"></div>
+            <div className="h-4 bg-teamax-gold/20 rounded-xl w-1/2"></div>
+            <div className="h-4 bg-teamax-gold/20 rounded-xl w-2/3"></div>
           </div>
         </div>
       </div>
@@ -206,13 +206,13 @@ const SiteSettingsManager: React.FC = () => {
   }
 
   return (
-    <div className="mission-card rounded-none p-6">
+    <div className="mission-card rounded-xl p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-display font-bold text-teamax-gold tracking-[0.08em]">Site Settings</h2>
         {!isEditing ? (
           <button
             onClick={() => setIsEditing(true)}
-            className="mission-btn rounded-none flex items-center space-x-2"
+            className="mission-btn rounded-xl flex items-center space-x-2"
           >
             <Edit className="h-4 w-4" />
             <span>Edit Settings</span>
@@ -221,7 +221,7 @@ const SiteSettingsManager: React.FC = () => {
           <div className="flex space-x-2">
             <button
               onClick={handleCancel}
-              className="mission-btn-outline rounded-none flex items-center space-x-2"
+              className="mission-btn-outline rounded-xl flex items-center space-x-2"
             >
               <X className="h-4 w-4" />
               <span>Cancel</span>
@@ -229,7 +229,7 @@ const SiteSettingsManager: React.FC = () => {
             <button
               onClick={handleSave}
               disabled={uploading}
-              className="mission-btn rounded-none flex items-center space-x-2 disabled:opacity-50"
+              className="mission-btn rounded-xl flex items-center space-x-2 disabled:opacity-50"
             >
               <Save className="h-4 w-4" />
               <span>{uploading ? 'Saving...' : 'Save Changes'}</span>
@@ -245,7 +245,7 @@ const SiteSettingsManager: React.FC = () => {
             Site Logo
           </label>
           <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 rounded-none overflow-hidden bg-black border border-teamax-gold/30 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-xl overflow-hidden bg-black border border-teamax-gold/30 flex items-center justify-center">
               {logoPreview ? (
                 <img
                   src={logoPreview}
@@ -267,7 +267,7 @@ const SiteSettingsManager: React.FC = () => {
                 />
                 <label
                   htmlFor="logo-upload"
-                  className="mission-btn-outline rounded-none flex items-center space-x-2 cursor-pointer"
+                  className="mission-btn-outline rounded-xl flex items-center space-x-2 cursor-pointer"
                 >
                   <Upload className="h-4 w-4" />
                   <span>Upload Logo</span>
@@ -341,7 +341,7 @@ const SiteSettingsManager: React.FC = () => {
             {isEditing && (
               <button
                 onClick={handleAddSlide}
-                className="mission-btn-outline rounded-none flex items-center gap-2 text-sm"
+                className="mission-btn-outline rounded-xl flex items-center gap-2 text-sm"
               >
                 <Plus className="w-4 h-4" />
                 Add Slide
@@ -351,11 +351,11 @@ const SiteSettingsManager: React.FC = () => {
 
           <div className="space-y-6">
             {heroSlides.map((slide, index) => (
-              <div key={index} className="bg-black border border-teamax-gold/20 rounded-none p-4 relative">
+              <div key={index} className="bg-black border border-teamax-gold/20 rounded-xl p-4 relative">
                 {isEditing && heroSlides.length > 1 && (
                   <button
                     onClick={() => handleRemoveSlide(index)}
-                    className="absolute top-4 right-4 text-teamax-gold hover:text-teamax-gold/70 p-1 hover:bg-teamax-gold/10 rounded-none transition-colors"
+                    className="absolute top-4 right-4 text-teamax-gold hover:text-teamax-gold/70 p-1 hover:bg-teamax-gold/10 rounded-xl transition-colors"
                     title="Remove slide"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -366,7 +366,7 @@ const SiteSettingsManager: React.FC = () => {
                   {/* Image Preview & Upload */}
                   <div className="col-span-1">
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2">Slide Image</label>
-                    <div className="w-full h-32 rounded-none overflow-hidden bg-black border border-teamax-gold/30 relative group">
+                    <div className="w-full h-32 rounded-xl overflow-hidden bg-black border border-teamax-gold/30 relative group">
                       <img
                         src={slide.url}
                         alt={`Slide ${index + 1}`}
@@ -376,7 +376,7 @@ const SiteSettingsManager: React.FC = () => {
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <label
                             htmlFor={`slide-upload-${index}`}
-                            className="cursor-pointer p-2 bg-teamax-surface border border-teamax-gold/30 rounded-none shadow-gold hover:bg-teamax-gold/10"
+                            className="cursor-pointer p-2 bg-teamax-surface border border-teamax-gold/30 rounded-xl shadow-gold hover:bg-teamax-gold/10"
                             title="Update slide image"
                           >
                             <Upload className="w-4 h-4 text-teamax-gold" />
@@ -499,7 +499,7 @@ const SiteSettingsManager: React.FC = () => {
         </div>
 
         {/* Facebook Messenger Orders */}
-        <div className="border border-teamax-gold/30 bg-black/40 p-5 space-y-4">
+        <div className="rounded-xl border border-teamax-gold/30 bg-black/40 p-5 space-y-4">
           <div className="flex items-center gap-3">
             <MessageCircle className="h-5 w-5 text-teamax-gold" />
             <div>

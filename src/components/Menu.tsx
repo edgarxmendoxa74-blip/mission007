@@ -129,7 +129,7 @@ const Menu: React.FC<MenuProps> = ({ menuItems, addToCart, cartItems, updateQuan
               placeholder="Search the briefing..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="block w-full pl-12 pr-12 py-4 bg-teamax-surface border border-teamax-gold/40 rounded-none text-teamax-primary placeholder:text-teamax-secondary focus:outline-none focus:border-teamax-gold transition-all shadow-gold"
+              className="block w-full pl-12 pr-12 py-4 bg-teamax-surface border border-teamax-gold/40 rounded-xl text-teamax-primary placeholder:text-teamax-secondary focus:outline-none focus:border-teamax-gold transition-all shadow-gold"
             />
             {searchTerm && (
               <button
@@ -164,7 +164,7 @@ const Menu: React.FC<MenuProps> = ({ menuItems, addToCart, cartItems, updateQuan
           })}
 
           {filteredMenuItems.length === 0 && (
-            <div className="text-center py-20 bg-teamax-surface rounded-none border border-dashed border-teamax-gold/40">
+            <div className="text-center py-20 bg-teamax-surface rounded-xl border border-dashed border-teamax-gold/40">
               <div className="text-6xl mb-4">🔍</div>
               <h3 className="text-2xl font-display font-bold text-teamax-gold mb-2">No dishes found</h3>
               <p className="text-teamax-secondary">Try searching for something else or browse our categories.</p>

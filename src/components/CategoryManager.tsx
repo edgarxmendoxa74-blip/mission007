@@ -186,7 +186,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ onBack }) => {
                     className="mission-input flex-1"
                     placeholder="Enter emoji or icon"
                   />
-                  <div className="w-12 h-12 bg-black border border-teamax-gold/20 rounded-none flex items-center justify-center text-2xl">
+                  <div className="w-12 h-12 bg-black border border-teamax-gold/20 rounded-xl flex items-center justify-center text-2xl">
                     {formData.icon}
                   </div>
                 </div>
@@ -274,7 +274,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ onBack }) => {
                 {categories.map((category) => (
                   <div
                     key={category.id}
-                    className="flex items-center justify-between p-4 bg-black border border-teamax-gold/20 rounded-none hover:bg-teamax-gold/5 transition-colors duration-200"
+                    className="flex items-center justify-between p-4 bg-black border border-teamax-gold/20 rounded-xl hover:bg-teamax-gold/5 transition-colors duration-200"
                   >
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center space-x-2 text-teamax-secondary cursor-move">
@@ -289,7 +289,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ onBack }) => {
                     </div>
 
                     <div className="flex items-center space-x-3">
-                      <span className={`px-3 py-1 rounded-none text-[10px] font-bold uppercase tracking-widest border ${category.active
+                      <span className={`px-3 py-1 rounded-xl text-[10px] font-bold uppercase tracking-widest border ${category.active
                         ? 'bg-green-500/10 text-green-400 border-green-500/30'
                         : 'bg-red-500/10 text-red-400 border-red-500/30'
                         }`}>
@@ -298,7 +298,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ onBack }) => {
 
                       <button
                         onClick={() => handleEditCategory(category)}
-                        className="mission-btn-outline p-2 rounded-none transition-colors duration-200"
+                        className="mission-btn-outline p-2 rounded-xl transition-colors duration-200"
                         title="Edit Category"
                         aria-label="Edit Category"
                       >
@@ -307,7 +307,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ onBack }) => {
 
                       <button
                         onClick={() => handleDeleteCategory(category.id)}
-                        className="p-2 bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white rounded-none transition-colors duration-200"
+                        className="p-2 bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white rounded-xl transition-colors duration-200"
                         title="Delete Category"
                         aria-label="Delete Category"
                       >
@@ -325,7 +325,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ onBack }) => {
       {showSaveSuccess && (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-bounce-gentle">
           <div className="mission-card px-8 py-4 flex items-center gap-3 border-teamax-gold/50 shadow-gold">
-            <div className="bg-green-500 rounded-none p-1">
+            <div className="bg-green-500 rounded-xl p-1">
               <CheckCircle2 className="h-4 w-4 text-white" />
             </div>
             <span className="font-bold uppercase tracking-widest text-[10px] text-teamax-gold">Category Saved Successfully!</span>

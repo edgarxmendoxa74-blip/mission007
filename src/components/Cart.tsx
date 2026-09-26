@@ -1,14 +1,16 @@
-import React, { memo } from 'react';
-import { Trash2, Plus, Minus, ArrowLeft } from 'lucide-react';
+import React, { memo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { Trash2, Plus, Minus, X, ShoppingCart } from 'lucide-react';
 import { CartItem, LineItemServiceType, MealMode } from '../types';
 
 interface CartProps {
+  isOpen: boolean;
+  onClose: () => void;
   cartItems: CartItem[];
   updateQuantity: (id: string, quantity: number) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
   getTotalPrice: () => number;
-  onContinueShopping: () => void;
   onCheckout: () => void;
 }
 
@@ -22,155 +24,187 @@ const SERVICE_LABEL: Record<LineItemServiceType, string> = {
   'TAKE-AWAY': 'Take Away'
 };
 
+const Detail: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
+  <p className="text-[11px] text-teamax-secondary font-bold uppercase tracking-wider">
+    {label}: <span className="text-teamax-gold normal-case tracking-normal">{children}</span>
+  </p>
+);
+
 const Cart: React.FC<CartProps> = ({
+  isOpen,
+  onClose,
   cartItems,
   updateQuantity,
   removeFromCart,
   clearCart,
   getTotalPrice,
-  onContinueShopping,
   onCheckout
 }) => {
-  if (cartItems.length === 0) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="text-center py-20 mission-card">
-          <div className="text-7xl mb-6">🛒</div>
-          <p className="text-[10px] uppercase tracking-[0.4em] text-teamax-gold mb-3">Dossier Empty</p>
-          <h2 className="text-3xl font-display font-bold text-teamax-gold tracking-[0.12em] mb-2">Your cart is empty</h2>
-          <p className="text-teamax-secondary mb-10 max-w-sm mx-auto">Add a classified selection from the menu to begin your mission.</p>
-          <button
-            onClick={onContinueShopping}
-            className="mission-btn px-10 py-4"
-          >
-            Browse Menu
-          </button>
+  // Close on Escape and keep the page behind the modal from scrolling
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md animate-fade-in"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cart-modal-title"
+    >
+      <div
+        className="rounded-t-3xl sm:rounded-2xl overflow-hidden relative bg-teamax-surface w-full sm:max-w-lg max-h-[90vh] supports-[height:100dvh]:max-h-[90dvh] flex flex-col border border-teamax-gold/40 shadow-gold-lg animate-scale-in"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between gap-3 px-5 sm:px-6 py-4 border-b border-teamax-gold/30 shrink-0">
+          <h2 id="cart-modal-title" className="text-xl sm:text-2xl font-display font-bold text-teamax-gold tracking-[0.12em] flex items-center gap-3">
+            <ShoppingCart className="h-5 w-5" />
+            Your Cart
+            {itemCount > 0 && (
+              <span className="text-xs font-sans tracking-normal text-teamax-secondary">({itemCount})</span>
+            )}
+          </h2>
+          <div className="flex items-center gap-4">
+            {cartItems.length > 0 && (
+              <button
+                onClick={clearCart}
+                className="text-red-400 hover:text-red-300 transition-colors font-bold uppercase tracking-widest text-[10px]"
+              >
+                Clear All
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="p-2 text-teamax-secondary hover:text-teamax-gold transition-colors"
+              aria-label="Close cart"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
-      </div>
-    );
-  }
 
-  return (
-    <div className="max-w-4xl mx-auto px-4 py-12 pb-24">
-      <div className="flex flex-wrap items-center justify-between gap-y-4 mb-8 sm:mb-10">
-        <button
-          onClick={onContinueShopping}
-          className="flex items-center space-x-2 text-teamax-secondary hover:text-teamax-gold transition-all group"
-        >
-          <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
-          <span className="font-bold uppercase tracking-widest text-xs">Back to Menu</span>
-        </button>
-        <h1 className="order-last w-full text-center sm:order-none sm:w-auto text-3xl md:text-4xl font-display font-bold text-teamax-gold tracking-[0.12em]">Your Cart</h1>
-        <button
-          onClick={clearCart}
-          className="text-red-400 hover:text-red-300 transition-colors font-bold uppercase tracking-widest text-xs"
-        >
-          Clear All
-        </button>
-      </div>
+        {cartItems.length === 0 ? (
+          <div className="text-center px-6 py-14">
+            <div className="text-6xl mb-5">🛒</div>
+            <p className="text-[10px] uppercase tracking-[0.4em] text-teamax-gold mb-3">Dossier Empty</p>
+            <h3 className="text-2xl font-display font-bold text-teamax-gold tracking-[0.12em] mb-2">Your cart is empty</h3>
+            <p className="text-sm text-teamax-secondary mb-8 max-w-xs mx-auto">Add a classified selection from the menu to begin your mission.</p>
+            <button onClick={onClose} className="mission-btn px-10 py-4 text-xs">
+              Browse Menu
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Items */}
+            <ul className="flex-1 overflow-y-auto overscroll-contain divide-y divide-teamax-gold/15">
+              {cartItems.map(item => (
+                <li key={item.id} className="px-5 sm:px-6 py-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-base font-display font-bold text-teamax-gold leading-snug">{item.name}</h3>
+                      <div className="space-y-0.5 mt-1.5">
+                        {item.mealMode && <Detail label="Meal Mode">{MEAL_MODE_LABEL[item.mealMode]}</Detail>}
+                        {item.selectedVariation && <Detail label="Variation">{item.selectedVariation.name}</Detail>}
+                        {item.selectedDrinkUpgrade && (
+                          <Detail label="Set Drink">
+                            {item.selectedDrinkUpgrade.name} · +₱{item.selectedDrinkUpgrade.price.toFixed(2)}
+                          </Detail>
+                        )}
+                        {item.selectedFlavor && <Detail label="Flavor">{item.selectedFlavor}</Detail>}
+                        {item.selectedAddOns && item.selectedAddOns.length > 0 && (
+                          <Detail label="Add-ons">
+                            {item.selectedAddOns.map(addOn =>
+                              addOn.quantity && addOn.quantity > 1
+                                ? `${addOn.name} (x${addOn.quantity})`
+                                : addOn.name
+                            ).join(', ')}
+                          </Detail>
+                        )}
+                        {item.serviceType && <Detail label="Service">{SERVICE_LABEL[item.serviceType]}</Detail>}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => removeFromCart(item.id)}
+                      className="p-2 -mr-2 text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-all flex-shrink-0"
+                      title="Remove item"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
 
-      <div className="mission-card overflow-hidden mb-8">
-        {cartItems.map((item, index) => (
-          <div
-            key={item.id}
-            className={`p-6 sm:p-8 ${index !== cartItems.length - 1 ? 'border-b border-teamax-gold/20' : ''} hover:bg-white/5 transition-colors`}
-          >
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="flex-1">
-                <h3 className="text-xl font-display font-bold text-teamax-gold mb-3">{item.name}</h3>
-                <div className="space-y-1.5">
-                  {item.mealMode && (
-                    <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">
-                      Meal Mode: <span className="text-teamax-gold">{MEAL_MODE_LABEL[item.mealMode]}</span>
-                    </p>
-                  )}
-                  {item.selectedVariation && (
-                    <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">
-                      Variation: <span className="text-teamax-gold">{item.selectedVariation.name}</span>
-                    </p>
-                  )}
-                  {item.selectedDrinkUpgrade && (
-                    <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">
-                      Set Drink: <span className="text-teamax-gold">{item.selectedDrinkUpgrade.name} · +₱{item.selectedDrinkUpgrade.price.toFixed(2)}</span>
-                    </p>
-                  )}
-                  {item.selectedFlavor && (
-                    <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">
-                      Flavor: <span className="text-teamax-gold">{item.selectedFlavor}</span>
-                    </p>
-                  )}
-                  {item.selectedAddOns && item.selectedAddOns.length > 0 && (
-                    <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">
-                      Add-ons: <span className="text-teamax-gold">
-                        {item.selectedAddOns.map(addOn =>
-                          addOn.quantity && addOn.quantity > 1
-                            ? `${addOn.name} (x${addOn.quantity})`
-                            : addOn.name
-                        ).join(', ')}
-                      </span>
-                    </p>
-                  )}
-                  {item.serviceType && (
-                    <p className="text-xs text-teamax-secondary font-bold uppercase tracking-wider">
-                      Service: <span className="text-teamax-gold">{SERVICE_LABEL[item.serviceType]}</span>
-                    </p>
-                  )}
-                </div>
-                <p className="text-lg font-bold text-teamax-gold mt-4">₱{(item.totalPrice || 0).toFixed(2)}</p>
+                  <div className="flex items-center justify-between gap-3 mt-3">
+                    <div className="rounded-xl flex items-center gap-2 bg-black p-1 border border-teamax-gold/40">
+                      <button
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        className="rounded-lg p-1.5 hover:bg-teamax-gold hover:text-black text-teamax-gold"
+                        title="Decrease quantity"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+                      <span className="font-bold text-teamax-primary min-w-[28px] text-center">{item.quantity}</span>
+                      <button
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        className="rounded-lg p-1.5 hover:bg-teamax-gold hover:text-black text-teamax-gold"
+                        title="Increase quantity"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-teamax-gold tabular-nums">
+                        ₱{((item.totalPrice || 0) * (item.quantity || 0)).toFixed(2)}
+                      </p>
+                      {item.quantity > 1 && (
+                        <p className="text-[10px] text-teamax-secondary">₱{(item.totalPrice || 0).toFixed(2)} each</p>
+                      )}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {/* Footer */}
+            <div className="border-t border-teamax-gold/30 px-5 sm:px-6 py-4 shrink-0 bg-teamax-surface">
+              <div className="flex items-center justify-between text-2xl font-display font-bold text-teamax-gold mb-4">
+                <span>Total</span>
+                <span className="tabular-nums">₱{(getTotalPrice() || 0).toFixed(2)}</span>
               </div>
-
-              <div className="flex items-center justify-between md:justify-end space-x-6">
-                <div className="flex items-center space-x-4 bg-black p-1.5 border border-teamax-gold/40">
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    className="p-2 hover:bg-teamax-gold hover:text-black text-teamax-gold"
-                    title="Decrease quantity"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </button>
-                  <span className="font-bold text-teamax-primary min-w-[32px] text-center text-lg">{item.quantity}</span>
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className="p-2 hover:bg-teamax-gold hover:text-black text-teamax-gold"
-                    title="Increase quantity"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
-                </div>
-
-                <div className="text-right min-w-[100px]">
-                  <p className="text-xl font-bold text-teamax-gold">
-                    ₱{((item.totalPrice || 0) * (item.quantity || 0)).toFixed(2)}
-                  </p>
-                </div>
-
+              <div className="grid grid-cols-2 gap-3">
                 <button
-                  onClick={() => removeFromCart(item.id)}
-                  className="p-3 text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-all"
-                  title="Remove item"
+                  onClick={onClose}
+                  className="mission-btn-outline py-4 text-[10px]"
                 >
-                  <Trash2 className="h-5 w-5" />
+                  Add More
+                </button>
+                <button
+                  onClick={onCheckout}
+                  className="mission-btn py-4 text-[10px]"
+                >
+                  Checkout
                 </button>
               </div>
             </div>
-          </div>
-        ))}
+          </>
+        )}
       </div>
-
-      <div className="mission-card p-8">
-        <div className="flex items-center justify-between text-3xl font-display font-bold text-teamax-gold mb-8">
-          <span>Total:</span>
-          <span>₱{(getTotalPrice() || 0).toFixed(2)}</span>
-        </div>
-
-        <button
-          onClick={onCheckout}
-          className="mission-btn w-full py-5 text-lg"
-        >
-          Proceed to Checkout
-        </button>
-      </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

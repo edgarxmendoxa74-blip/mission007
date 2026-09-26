@@ -1,4 +1,4 @@
-import React, { useMemo, memo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useCart } from './hooks/useCart';
 import Header from './components/Header';
@@ -15,11 +15,15 @@ import { useStorefrontMenu } from './hooks/useStorefrontMenu';
 function MainApp() {
   const cart = useCart();
   const storefrontMenu = useStorefrontMenu();
-  const [currentView, setCurrentView] = React.useState<'menu' | 'cart' | 'checkout'>('menu');
+  const [currentView, setCurrentView] = React.useState<'menu' | 'checkout'>('menu');
+  const [isCartOpen, setIsCartOpen] = React.useState(false);
+  const openCart = useCallback(() => setIsCartOpen(true), []);
+  const closeCart = useCallback(() => setIsCartOpen(false), []);
   const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
 
-  const handleViewChange = (view: 'menu' | 'cart' | 'checkout') => {
+  const handleViewChange = (view: 'menu' | 'checkout') => {
     setCurrentView(view);
+    window.scrollTo({ top: 0 });
   };
 
   const handleCategoryClick = (categoryId: string) => {
@@ -38,7 +42,7 @@ function MainApp() {
     <div className="min-h-screen font-sans app-bg">
       <Header
         cartItemsCount={totalItemsCount}
-        onCartClick={() => handleViewChange('cart')}
+        onCartClick={openCart}
       />
       <SubNav selectedCategory={selectedCategory} onCategoryClick={handleCategoryClick} />
 
@@ -54,23 +58,28 @@ function MainApp() {
         </>
       )}
 
-      {currentView === 'cart' && (
-        <Cart
-          cartItems={cart.cartItems}
-          updateQuantity={cart.updateQuantity}
-          removeFromCart={cart.removeFromCart}
-          clearCart={cart.clearCart}
-          getTotalPrice={cart.getTotalPrice}
-          onContinueShopping={() => handleViewChange('menu')}
-          onCheckout={() => handleViewChange('checkout')}
-        />
-      )}
+      <Cart
+        isOpen={isCartOpen}
+        onClose={closeCart}
+        cartItems={cart.cartItems}
+        updateQuantity={cart.updateQuantity}
+        removeFromCart={cart.removeFromCart}
+        clearCart={cart.clearCart}
+        getTotalPrice={cart.getTotalPrice}
+        onCheckout={() => {
+          setIsCartOpen(false);
+          handleViewChange('checkout');
+        }}
+      />
 
       {currentView === 'checkout' && (
         <Checkout
           cartItems={cart.cartItems}
           totalPrice={cart.getTotalPrice()}
-          onBack={() => handleViewChange('cart')}
+          onBack={() => {
+            handleViewChange('menu');
+            setIsCartOpen(true);
+          }}
           onSuccess={() => {
             cart.clearCart();
             handleViewChange('menu');
@@ -82,7 +91,7 @@ function MainApp() {
       {currentView === 'menu' && (
         <FloatingCartButton
           itemCount={totalItemsCount}
-          onCartClick={() => handleViewChange('cart')}
+          onCartClick={openCart}
         />
       )}
 

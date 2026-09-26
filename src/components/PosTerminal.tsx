@@ -188,7 +188,7 @@ const PosTerminal: React.FC = () => {
             <button
               key={c.id}
               onClick={() => setCategory(c.id)}
-              className={`flex-shrink-0 px-3 py-2 text-[10px] font-bold uppercase tracking-widest border whitespace-nowrap transition-colors ${category === c.id
+              className={`rounded-xl flex-shrink-0 px-3 py-2 text-[10px] font-bold uppercase tracking-widest border whitespace-nowrap transition-colors ${category === c.id
                 ? 'bg-teamax-gold text-black border-teamax-gold'
                 : 'border-teamax-gold/30 text-teamax-gold hover:bg-teamax-gold/10'}`}
             >
@@ -284,11 +284,11 @@ const PosTerminal: React.FC = () => {
                     <p className="text-[11px] text-teamax-secondary">{peso(l.totalPrice)} each</p>
                   </div>
                   <div className="flex items-center gap-1">
-                    <button onClick={() => changeQty(l.id, -1)} className="p-1.5 border border-teamax-gold/30 text-teamax-gold" title="Decrease">
+                    <button onClick={() => changeQty(l.id, -1)} className="rounded-xl p-1.5 border border-teamax-gold/30 text-teamax-gold" title="Decrease">
                       {l.quantity === 1 ? <Trash2 className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
                     </button>
                     <span className="w-7 text-center text-sm font-bold text-teamax-primary tabular-nums">{l.quantity}</span>
-                    <button onClick={() => changeQty(l.id, 1)} className="p-1.5 border border-teamax-gold/30 text-teamax-gold" title="Increase">
+                    <button onClick={() => changeQty(l.id, 1)} className="rounded-xl p-1.5 border border-teamax-gold/30 text-teamax-gold" title="Increase">
                       <Plus className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -341,7 +341,7 @@ const PosTerminal: React.FC = () => {
                   placeholder="Cash tendered"
                   className="mission-input"
                 />
-                <div className={`flex flex-col justify-center px-3 border ${tendered && change < 0 ? 'border-red-500/40' : 'border-teamax-gold/20'} bg-black`}>
+                <div className={`rounded-xl flex flex-col justify-center px-3 border ${tendered && change < 0 ? 'border-red-500/40' : 'border-teamax-gold/20'} bg-black`}>
                   <span className="text-[9px] font-bold uppercase tracking-widest text-teamax-secondary">{tendered && change < 0 ? 'Short' : 'Change'}</span>
                   <span className={`text-sm font-bold tabular-nums ${tendered && change < 0 ? 'text-red-400' : 'text-teamax-primary'}`}>
                     {tendered ? peso(Math.abs(change)) : '—'}
@@ -390,7 +390,7 @@ const PosTerminal: React.FC = () => {
                     <button
                       key={v.id}
                       onClick={() => setPickVariation(v)}
-                      className={`p-3 border text-left text-sm ${pickVariation?.id === v.id
+                      className={`rounded-xl p-3 border text-left text-sm ${pickVariation?.id === v.id
                         ? 'border-teamax-gold bg-teamax-gold/10 text-teamax-gold'
                         : 'border-teamax-gold/20 text-teamax-primary'}`}
                     >
@@ -409,7 +409,7 @@ const PosTerminal: React.FC = () => {
                   {picking.addOns.map(a => {
                     const on = pickAddOns.some(x => x.id === a.id);
                     return (
-                      <label key={a.id} className={`flex items-center justify-between p-3 border cursor-pointer text-sm ${on ? 'border-teamax-gold bg-teamax-gold/10' : 'border-teamax-gold/20'}`}>
+                      <label key={a.id} className={`rounded-xl flex items-center justify-between p-3 border cursor-pointer text-sm ${on ? 'border-teamax-gold bg-teamax-gold/10' : 'border-teamax-gold/20'}`}>
                         <span className="flex items-center gap-2 text-teamax-primary">
                           <input
                             type="checkbox"

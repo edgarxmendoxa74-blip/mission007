@@ -49,7 +49,7 @@ const Hero: React.FC = () => {
             {description}
           </p>
 
-          <div className="inline-flex items-center gap-4 px-5 py-2.5 bg-black/40 backdrop-blur-md rounded-none border border-teamax-gold/40 animate-fade-in shadow-gold">
+          <div className="inline-flex items-center gap-4 px-5 py-2.5 bg-black/40 backdrop-blur-md rounded-xl border border-teamax-gold/40 animate-fade-in shadow-gold">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-teamax-gold rounded-full shadow-[0_0_8px_rgba(212,175,55,0.8)]"></div>
               <span className="text-[10px] uppercase tracking-widest font-bold text-teamax-gold">Open Daily</span>

@@ -181,17 +181,17 @@ img {
 }
 
 .mission-card {
-  @apply bg-teamax-surface border border-teamax-gold/30 shadow-gold;
+  @apply bg-teamax-surface border border-teamax-gold/30 shadow-gold rounded-2xl;
 }
 
 .mission-input {
-  @apply w-full px-4 py-3 bg-black border border-teamax-gold/40 text-teamax-primary placeholder:text-teamax-secondary/70 focus:outline-none focus:border-teamax-gold rounded-none;
+  @apply w-full px-4 py-3 bg-black border border-teamax-gold/40 text-teamax-primary placeholder:text-teamax-secondary/70 focus:outline-none focus:border-teamax-gold rounded-xl;
 }
 
 .mission-btn {
-  @apply bg-teamax-gold text-black font-bold uppercase tracking-[0.2em] hover:brightness-110 active:scale-[0.98] transition-all;
+  @apply rounded-xl bg-teamax-gold text-black font-bold uppercase tracking-[0.2em] hover:brightness-110 active:scale-[0.98] transition-all;
 }
 
 .mission-btn-outline {
-  @apply border border-teamax-gold text-teamax-gold bg-transparent hover:bg-teamax-gold hover:text-black font-bold uppercase tracking-[0.2em] transition-all;
+  @apply rounded-xl border border-teamax-gold text-teamax-gold bg-transparent hover:bg-teamax-gold hover:text-black font-bold uppercase tracking-[0.2em] transition-all;
 }

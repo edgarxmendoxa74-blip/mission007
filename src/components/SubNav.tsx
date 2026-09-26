@@ -10,7 +10,7 @@ const SubNav: React.FC<SubNavProps> = ({ selectedCategory, onCategoryClick }) =>
   const categories = SMART_CATEGORIES;
 
   const chip = (active: boolean) =>
-    `px-5 py-2 text-xs transition-all duration-300 border uppercase tracking-widest font-bold whitespace-nowrap active:scale-95 ${
+    `rounded-full px-5 py-2 text-xs transition-all duration-300 border uppercase tracking-widest font-bold whitespace-nowrap active:scale-95 ${
       active
         ? 'bg-teamax-gold text-black border-teamax-gold shadow-gold scale-105'
         : 'bg-transparent text-teamax-secondary border-teamax-gold/30 hover:border-teamax-gold hover:text-teamax-gold'

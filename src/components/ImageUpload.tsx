@@ -52,7 +52,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           <img
             src={currentImage}
             alt="Menu item preview"
-            className="w-full h-48 object-cover border border-teamax-gold/30 rounded-none transition-opacity duration-300"
+            className="w-full h-48 object-cover border border-teamax-gold/30 rounded-xl transition-opacity duration-300"
             loading="lazy"
             decoding="async"
             onError={(e) => {
@@ -66,7 +66,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           <button
             type="button"
             onClick={handleRemoveImage}
-            className="absolute top-2 right-2 p-2 bg-black/80 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white rounded-none transition-colors duration-200"
+            className="absolute top-2 right-2 p-2 bg-black/80 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white rounded-xl transition-colors duration-200"
             disabled={uploading}
             title="Remove image"
           >
@@ -91,7 +91,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       ) : (
         <div
           onClick={triggerFileSelect}
-          className="w-full h-48 border-2 border-dashed border-teamax-gold/30 bg-black rounded-none flex flex-col items-center justify-center cursor-pointer hover:border-teamax-gold/60 hover:bg-teamax-gold/5 transition-all duration-200"
+          className="w-full h-48 border-2 border-dashed border-teamax-gold/30 bg-black rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-teamax-gold/60 hover:bg-teamax-gold/5 transition-all duration-200"
         >
           {uploading ? (
             <div className="text-center">
@@ -129,7 +129,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             type="button"
             onClick={triggerFileSelect}
             disabled={uploading}
-            className="mission-btn-outline rounded-none flex items-center space-x-2 px-4 py-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mission-btn-outline rounded-xl flex items-center space-x-2 px-4 py-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Upload className="h-4 w-4" />
             <span>Upload Image</span>

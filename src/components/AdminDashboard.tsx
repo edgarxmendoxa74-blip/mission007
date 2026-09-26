@@ -427,8 +427,8 @@ const AdminDashboard: React.FC = () => {
   if (currentView === 'edit') {
     const labelClass = 'block text-[10px] font-bold uppercase tracking-widest text-teamax-gold mb-2';
     const sectionTitleClass = 'text-base sm:text-lg font-display font-bold text-teamax-gold tracking-[0.1em] flex items-center gap-3';
-    const checkboxClass = 'w-5 h-5 border-2 border-teamax-gold/40 text-teamax-gold focus:ring-teamax-gold bg-black cursor-pointer accent-[#D4AF37]';
-    const removeBtnClass = 'p-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-red-500/30 rounded-none transition-colors duration-200 flex items-center justify-center';
+    const checkboxClass = 'rounded w-5 h-5 border-2 border-teamax-gold/40 text-teamax-gold focus:ring-teamax-gold bg-black cursor-pointer accent-[#D4AF37]';
+    const removeBtnClass = 'p-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-red-500/30 rounded-xl transition-colors duration-200 flex items-center justify-center';
     // Existing items may use add-on categories (e.g. "Sides") that aren't in the default list
     const addOnCategoryOptions = [...new Set([
       ...addOnCategories.map(c => c.id),
@@ -440,7 +440,7 @@ const AdminDashboard: React.FC = () => {
       <>
         <button
           onClick={handleCancel}
-          className="flex-1 sm:flex-none px-5 py-3 sm:py-2 border border-teamax-gold/30 hover:bg-teamax-gold/10 transition-colors duration-200 flex items-center justify-center gap-2 font-bold uppercase tracking-widest text-[10px] text-teamax-gold rounded-none"
+          className="flex-1 sm:flex-none px-5 py-3 sm:py-2 border border-teamax-gold/30 hover:bg-teamax-gold/10 transition-colors duration-200 flex items-center justify-center gap-2 font-bold uppercase tracking-widest text-[10px] text-teamax-gold rounded-xl"
         >
           <X className="h-4 w-4" />
           <span>Cancel</span>
@@ -537,7 +537,7 @@ const AdminDashboard: React.FC = () => {
               </div>
 
               <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label className="flex items-center gap-3 p-4 bg-black border border-teamax-gold/20 cursor-pointer">
+                <label className="rounded-xl flex items-center gap-3 p-4 bg-black border border-teamax-gold/20 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={formData.popular || false}
@@ -546,7 +546,7 @@ const AdminDashboard: React.FC = () => {
                   />
                   <span className="text-xs font-bold uppercase tracking-widest text-teamax-secondary">Mark as Popular</span>
                 </label>
-                <label className="flex items-center gap-3 p-4 bg-black border border-teamax-gold/20 cursor-pointer">
+                <label className="rounded-xl flex items-center gap-3 p-4 bg-black border border-teamax-gold/20 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={formData.available ?? true}
@@ -588,7 +588,7 @@ const AdminDashboard: React.FC = () => {
                   />
                 </div>
 
-                <label className="flex items-center gap-3 p-4 bg-black border border-teamax-gold/20 cursor-pointer md:self-end">
+                <label className="rounded-xl flex items-center gap-3 p-4 bg-black border border-teamax-gold/20 cursor-pointer md:self-end">
                   <input
                     type="checkbox"
                     checked={formData.discountActive || false}
@@ -647,7 +647,7 @@ const AdminDashboard: React.FC = () => {
 
               <div className="space-y-3">
                 {formData.variations?.map((variation, index) => (
-                  <div key={variation.id} className="grid grid-cols-[1fr_7rem_auto] gap-2 sm:gap-3 p-3 sm:p-4 bg-black border border-teamax-gold/20">
+                  <div key={variation.id} className="rounded-xl grid grid-cols-[1fr_7rem_auto] gap-2 sm:gap-3 p-3 sm:p-4 bg-black border border-teamax-gold/20">
                     <input
                       type="text"
                       value={variation.name}
@@ -697,7 +697,7 @@ const AdminDashboard: React.FC = () => {
 
               <div className="space-y-3">
                 {formData.flavors?.map((flavor, index) => (
-                  <div key={index} className="grid grid-cols-[1fr_auto] gap-2 sm:gap-3 p-3 sm:p-4 bg-black border border-teamax-gold/20">
+                  <div key={index} className="rounded-xl grid grid-cols-[1fr_auto] gap-2 sm:gap-3 p-3 sm:p-4 bg-black border border-teamax-gold/20">
                     <input
                       type="text"
                       value={flavor}
@@ -740,7 +740,7 @@ const AdminDashboard: React.FC = () => {
 
               <div className="space-y-3">
                 {formData.addOns?.map((addOn, index) => (
-                  <div key={addOn.id} className="grid grid-cols-[1fr_7rem_auto] sm:grid-cols-[1fr_10rem_7rem_auto] gap-2 sm:gap-3 p-3 sm:p-4 bg-black border border-teamax-gold/20">
+                  <div key={addOn.id} className="rounded-xl grid grid-cols-[1fr_7rem_auto] sm:grid-cols-[1fr_10rem_7rem_auto] gap-2 sm:gap-3 p-3 sm:p-4 bg-black border border-teamax-gold/20">
                     <input
                       type="text"
                       value={addOn.name}
@@ -831,7 +831,7 @@ const AdminDashboard: React.FC = () => {
                   placeholder="Search dishes or description..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-11 pr-10 py-3 bg-black border border-teamax-gold/30 text-teamax-primary placeholder:text-teamax-secondary/50 focus:ring-2 focus:ring-teamax-gold focus:border-teamax-gold transition-all outline-none text-sm font-medium rounded-none"
+                  className="w-full pl-11 pr-10 py-3 bg-black border border-teamax-gold/30 text-teamax-primary placeholder:text-teamax-secondary/50 focus:ring-2 focus:ring-teamax-gold focus:border-teamax-gold transition-all outline-none text-sm font-medium rounded-xl"
                 />
                 {searchTerm && (
                   <button
@@ -852,7 +852,7 @@ const AdminDashboard: React.FC = () => {
                     </span>
                     <button
                       onClick={() => setShowBulkActions(!showBulkActions)}
-                      className="px-4 py-2 border border-teamax-gold/30 text-teamax-gold hover:bg-teamax-gold hover:text-black transition-all duration-200 font-bold uppercase tracking-widest text-[10px] rounded-none"
+                      className="px-4 py-2 border border-teamax-gold/30 text-teamax-gold hover:bg-teamax-gold hover:text-black transition-all duration-200 font-bold uppercase tracking-widest text-[10px] rounded-xl"
                     >
                       Bulk Actions
                     </button>
@@ -866,7 +866,7 @@ const AdminDashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 py-8">
           {/* Bulk Actions Panel */}
           {showBulkActions && selectedItems.length > 0 && (
-            <div className="mission-card p-6 mb-6 border-l-4 border-teamax-gold rounded-none">
+            <div className="mission-card p-6 mb-6 border-l-4 border-teamax-gold rounded-xl">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <h3 className="text-lg font-display font-bold text-teamax-gold tracking-[0.08em] mb-1">Bulk Actions</h3>
@@ -897,7 +897,7 @@ const AdminDashboard: React.FC = () => {
                   <button
                     onClick={handleBulkRemove}
                     disabled={isProcessing}
-                    className="flex items-center space-x-2 bg-red-500/10 text-red-400 border border-red-500/30 px-4 py-2 hover:bg-red-500 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest rounded-none"
+                    className="flex items-center space-x-2 bg-red-500/10 text-red-400 border border-red-500/30 px-4 py-2 hover:bg-red-500 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest rounded-xl"
                   >
                     <Trash2 className="h-4 w-4" />
                     <span>{isProcessing ? 'Removing...' : 'Remove Selected'}</span>
@@ -908,7 +908,7 @@ const AdminDashboard: React.FC = () => {
                       setSelectedItems([]);
                       setShowBulkActions(false);
                     }}
-                    className="flex items-center space-x-2 bg-teamax-surface text-teamax-secondary border border-teamax-gold/20 px-4 py-2 hover:bg-teamax-gold/10 hover:text-teamax-gold transition-colors text-xs font-bold uppercase tracking-widest rounded-none"
+                    className="flex items-center space-x-2 bg-teamax-surface text-teamax-secondary border border-teamax-gold/20 px-4 py-2 hover:bg-teamax-gold/10 hover:text-teamax-gold transition-colors text-xs font-bold uppercase tracking-widest rounded-xl"
                   >
                     <X className="h-4 w-4" />
                     <span>Clear Selection</span>
@@ -920,8 +920,8 @@ const AdminDashboard: React.FC = () => {
 
           <div className="space-y-12">
             {Object.keys(groupedItems).length === 0 ? (
-              <div className="mission-card p-12 text-center rounded-none">
-                <div className="bg-black w-20 h-20 flex items-center justify-center mx-auto mb-4 border border-teamax-gold/30 rounded-none">
+              <div className="mission-card p-12 text-center rounded-xl">
+                <div className="bg-black w-20 h-20 flex items-center justify-center mx-auto mb-4 border border-teamax-gold/30 rounded-xl">
                   <Package className="h-10 w-10 text-teamax-gold/30" />
                 </div>
                 <h3 className="text-xl font-display font-bold text-teamax-gold tracking-[0.08em]">No dishes found</h3>
@@ -942,7 +942,7 @@ const AdminDashboard: React.FC = () => {
                   <div key={category.id} className="animate-fade-in">
                     <div className="flex items-center justify-between mb-6 px-2">
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl bg-teamax-surface p-2.5 border border-teamax-gold/30 shadow-gold rounded-none">{category.icon}</span>
+                        <span className="text-2xl bg-teamax-surface p-2.5 border border-teamax-gold/30 shadow-gold rounded-xl">{category.icon}</span>
                         <div>
                           <h2 className="text-2xl font-display font-bold text-teamax-gold tracking-[0.05em] leading-none">{category.name}</h2>
                           <p className="text-[10px] font-bold text-teamax-secondary uppercase tracking-widest mt-1.5">{items.length} dishes in this category</p>
@@ -958,13 +958,13 @@ const AdminDashboard: React.FC = () => {
                             setSelectedItems(prev => [...new Set([...prev, ...itemIds])]);
                           }
                         }}
-                        className="text-[10px] font-bold uppercase tracking-widest text-teamax-gold hover:bg-teamax-gold/10 px-4 py-2 rounded-none border border-teamax-gold/30 transition-all"
+                        className="text-[10px] font-bold uppercase tracking-widest text-teamax-gold hover:bg-teamax-gold/10 px-4 py-2 rounded-xl border border-teamax-gold/30 transition-all"
                       >
                         {items.every(item => selectedItems.includes(item.id)) ? 'Deselect All' : 'Select Category'}
                       </button>
                     </div>
 
-                    <div className="mission-card overflow-hidden rounded-none">
+                    <div className="mission-card overflow-hidden rounded-xl">
                       {/* Desktop View */}
                       <div className="hidden md:block overflow-x-auto">
                         <table className="w-full text-left">
@@ -991,7 +991,7 @@ const AdminDashboard: React.FC = () => {
                                 </td>
                                 <td className="px-8 py-6">
                                   <div className="flex items-center gap-4">
-                                    <div className="w-14 h-14 overflow-hidden bg-black border border-teamax-gold/30 flex-shrink-0 rounded-none">
+                                    <div className="w-14 h-14 overflow-hidden bg-black border border-teamax-gold/30 flex-shrink-0 rounded-xl">
                                       {item.image ? (
                                         <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                       ) : (
@@ -1019,9 +1019,9 @@ const AdminDashboard: React.FC = () => {
                                 <td className="px-8 py-6">
                                   <div className="flex flex-col gap-1.5">
                                     {item.popular && (
-                                      <span className="w-fit text-[9px] font-bold uppercase tracking-widest bg-orange-500/10 text-orange-400 px-2 py-0.5 rounded-none border border-orange-500/30">Popular</span>
+                                      <span className="w-fit text-[9px] font-bold uppercase tracking-widest bg-orange-500/10 text-orange-400 px-2 py-0.5 rounded-xl border border-orange-500/30">Popular</span>
                                     )}
-                                    <span className={`w-fit text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-none border ${item.available
+                                    <span className={`w-fit text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-xl border ${item.available
                                       ? 'bg-green-500/10 text-green-400 border-green-500/30'
                                       : 'bg-red-500/10 text-red-400 border-red-500/30'}`}>
                                       {item.available ? 'Active' : 'Sold Out'}
@@ -1032,14 +1032,14 @@ const AdminDashboard: React.FC = () => {
                                   <div className="flex items-center justify-end space-x-2">
                                     <button
                                       onClick={() => handleEditItem(item)}
-                                      className="p-2.5 text-teamax-gold hover:bg-teamax-gold hover:text-black rounded-none transition-all border border-teamax-gold/30"
+                                      className="p-2.5 text-teamax-gold hover:bg-teamax-gold hover:text-black rounded-xl transition-all border border-teamax-gold/30"
                                       title="Edit Item"
                                     >
                                       <Edit className="h-4 w-4" />
                                     </button>
                                     <button
                                       onClick={() => handleDeleteItem(item.id)}
-                                      className="p-2.5 text-red-400 hover:bg-red-500 hover:text-white rounded-none transition-all border border-red-500/30"
+                                      className="p-2.5 text-red-400 hover:bg-red-500 hover:text-white rounded-xl transition-all border border-red-500/30"
                                       title="Delete Item"
                                     >
                                       <Trash2 className="h-4 w-4" />
@@ -1065,7 +1065,7 @@ const AdminDashboard: React.FC = () => {
                                   className="w-5 h-5 rounded-lg border-2 border-teamax-gold/40 text-teamax-gold focus:ring-teamax-gold bg-black"
                                   title={`Select ${item.name}`}
                                 />
-                                <div className="w-12 h-12 overflow-hidden bg-black border border-teamax-gold/30 rounded-none">
+                                <div className="w-12 h-12 overflow-hidden bg-black border border-teamax-gold/30 rounded-xl">
                                   {item.image ? (
                                     <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                   ) : (
@@ -1078,8 +1078,8 @@ const AdminDashboard: React.FC = () => {
                                 </div>
                               </div>
                               <div className="flex gap-2">
-                                <button onClick={() => handleEditItem(item)} className="p-2 text-teamax-gold hover:bg-teamax-gold hover:text-black rounded-none transition-all border border-teamax-gold/30" title="Edit Item"><Edit className="h-4 w-4" /></button>
-                                <button onClick={() => handleDeleteItem(item.id)} className="p-2 text-red-400 hover:bg-red-500 hover:text-white rounded-none transition-all border border-red-500/30" title="Delete Item"><Trash2 className="h-4 w-4" /></button>
+                                <button onClick={() => handleEditItem(item)} className="p-2 text-teamax-gold hover:bg-teamax-gold hover:text-black rounded-xl transition-all border border-teamax-gold/30" title="Edit Item"><Edit className="h-4 w-4" /></button>
+                                <button onClick={() => handleDeleteItem(item.id)} className="p-2 text-red-400 hover:bg-red-500 hover:text-white rounded-xl transition-all border border-red-500/30" title="Delete Item"><Trash2 className="h-4 w-4" /></button>
                               </div>
                             </div>
                           </div>
@@ -1168,7 +1168,7 @@ const AdminDashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="mission-card p-6">
             <div className="flex items-center">
-              <div className="p-3 bg-teamax-gold/10 border border-teamax-gold/30">
+              <div className="rounded-xl p-3 bg-teamax-gold/10 border border-teamax-gold/30">
                 <Package className="h-6 w-6 text-teamax-gold" />
               </div>
               <div className="ml-4">
@@ -1180,7 +1180,7 @@ const AdminDashboard: React.FC = () => {
 
           <div className="mission-card p-6">
             <div className="flex items-center">
-              <div className="p-3 bg-teamax-gold/10 border border-teamax-gold/30">
+              <div className="rounded-xl p-3 bg-teamax-gold/10 border border-teamax-gold/30">
                 <TrendingUp className="h-6 w-6 text-teamax-gold" />
               </div>
               <div className="ml-4">
@@ -1192,7 +1192,7 @@ const AdminDashboard: React.FC = () => {
 
           <div className="mission-card p-6">
             <div className="flex items-center">
-              <div className="p-3 bg-teamax-gold/10 border border-teamax-gold/30">
+              <div className="rounded-xl p-3 bg-teamax-gold/10 border border-teamax-gold/30">
                 <Coffee className="h-6 w-6 text-teamax-gold" />
               </div>
               <div className="ml-4">
@@ -1204,7 +1204,7 @@ const AdminDashboard: React.FC = () => {
 
           <div className="mission-card p-6">
             <div className="flex items-center">
-              <div className="p-3 bg-teamax-gold/10 border border-teamax-gold/30">
+              <div className="rounded-xl p-3 bg-teamax-gold/10 border border-teamax-gold/30">
                 <Users className="h-6 w-6 text-teamax-gold" />
               </div>
               <div className="ml-4">
@@ -1225,9 +1225,9 @@ const AdminDashboard: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button
                 onClick={() => setCurrentView('items')}
-                className="group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300"
+                className="rounded-xl group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300"
               >
-                <div className="p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
+                <div className="rounded-xl p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
                   <Package className="h-5 w-5" />
                 </div>
                 <div>
@@ -1238,9 +1238,9 @@ const AdminDashboard: React.FC = () => {
 
               <button
                 onClick={() => setCurrentView('categories')}
-                className="group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300"
+                className="rounded-xl group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300"
               >
-                <div className="p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
+                <div className="rounded-xl p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
                   <FolderOpen className="h-5 w-5" />
                 </div>
                 <div>
@@ -1251,9 +1251,9 @@ const AdminDashboard: React.FC = () => {
 
               <button
                 onClick={() => setCurrentView('orders')}
-                className="group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300"
+                className="rounded-xl group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300"
               >
-                <div className="p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
+                <div className="rounded-xl p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
                   <Package className="h-5 w-5" />
                 </div>
                 <div>
@@ -1264,9 +1264,9 @@ const AdminDashboard: React.FC = () => {
 
               <button
                 onClick={() => setCurrentView('pos')}
-                className="group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300"
+                className="rounded-xl group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300"
               >
-                <div className="p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
+                <div className="rounded-xl p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
                   <Calculator className="h-5 w-5" />
                 </div>
                 <div>
@@ -1277,9 +1277,9 @@ const AdminDashboard: React.FC = () => {
 
               <button
                 onClick={() => setCurrentView('analytics')}
-                className="group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300"
+                className="rounded-xl group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300"
               >
-                <div className="p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
+                <div className="rounded-xl p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
                   <BarChart3 className="h-5 w-5" />
                 </div>
                 <div>
@@ -1290,9 +1290,9 @@ const AdminDashboard: React.FC = () => {
 
               <button
                 onClick={() => setCurrentView('payments')}
-                className="group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300"
+                className="rounded-xl group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300"
               >
-                <div className="p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
+                <div className="rounded-xl p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
                   <CreditCard className="h-5 w-5" />
                 </div>
                 <div>
@@ -1303,9 +1303,9 @@ const AdminDashboard: React.FC = () => {
 
               <button
                 onClick={() => setCurrentView('settings')}
-                className="group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300 sm:col-span-2"
+                className="rounded-xl group flex items-center gap-4 p-5 text-left border border-teamax-gold/30 hover:border-teamax-gold hover:bg-teamax-gold/10 transition-all duration-300 sm:col-span-2"
               >
-                <div className="p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
+                <div className="rounded-xl p-3 border border-teamax-gold/40 text-teamax-gold group-hover:bg-teamax-gold group-hover:text-black transition-all">
                   <Settings className="h-5 w-5" />
                 </div>
                 <div>
@@ -1323,12 +1323,12 @@ const AdminDashboard: React.FC = () => {
             </h3>
             <div className="space-y-4">
               {categoryCounts.map((category) => (
-                <div key={category.id} className="flex items-center justify-between p-4 bg-black border border-teamax-gold/20">
+                <div key={category.id} className="rounded-xl flex items-center justify-between p-4 bg-black border border-teamax-gold/20">
                   <div className="flex items-center space-x-3">
-                    <span className="text-xl bg-black p-2 border border-teamax-gold/30">{category.icon}</span>
+                    <span className="rounded-xl text-xl bg-black p-2 border border-teamax-gold/30">{category.icon}</span>
                     <span className="font-bold text-teamax-gold text-sm">{category.name}</span>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-teamax-secondary border border-teamax-gold/30 px-2 py-1">
+                  <span className="rounded-xl text-[10px] font-bold uppercase tracking-widest text-teamax-secondary border border-teamax-gold/30 px-2 py-1">
                     {category.count} items
                   </span>
                 </div>

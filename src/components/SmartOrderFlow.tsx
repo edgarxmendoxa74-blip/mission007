@@ -225,7 +225,7 @@ const SmartOrderFlow: React.FC<SmartOrderFlowProps> = ({ product, onConfirm, onC
   // =========== Render step content ============
   const renderStepProgress = () => (
     <div className="px-4 sm:px-6 py-3 border-b border-teamax-gold/20 bg-black/40 shrink-0">
-      <div className="flex items-center overflow-x-auto scrollbar-hide space-x-1">
+      <div className="flex items-center justify-between sm:justify-start overflow-x-auto scrollbar-hide gap-0.5 sm:gap-1">
         {steps.map((s, idx) => {
           const isDone = idx < currentStepIndex;
           const isCurrent = idx === currentStepIndex;
@@ -237,19 +237,20 @@ const SmartOrderFlow: React.FC<SmartOrderFlowProps> = ({ product, onConfirm, onC
                   if (isDone) jumpToStep(s.id);
                 }}
                 disabled={!isDone && !isCurrent}
-                className={`flex items-center gap-2 shrink-0 px-2 py-1 transition-colors ${isDone ? 'cursor-pointer' : isCurrent ? 'cursor-default' : 'cursor-not-allowed opacity-50'}`}
+                title={s.label}
+                className={`flex items-center gap-1.5 sm:gap-2 shrink-0 px-1 sm:px-2 py-1 transition-colors ${isDone ? 'cursor-pointer' : isCurrent ? 'cursor-default' : 'cursor-not-allowed opacity-50'}`}
               >
                 <div
                   className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 transition-all ${isCurrent ? 'bg-teamax-gold text-black border-teamax-gold shadow-gold scale-110' : isDone ? 'bg-teamax-gold/20 text-teamax-gold border-teamax-gold/60' : 'bg-transparent text-teamax-secondary border-teamax-gold/20'}`}
                 >
                   {isDone ? <Check className="h-3.5 w-3.5" /> : idx + 1}
                 </div>
-                <span className={`text-[10px] font-bold uppercase tracking-widest whitespace-nowrap ${isCurrent ? 'text-teamax-gold' : isDone ? 'text-teamax-gold/80' : 'text-teamax-secondary'}`}>
+                <span className={`text-[10px] font-bold uppercase tracking-wider sm:tracking-widest whitespace-nowrap ${isCurrent ? '' : 'hidden sm:inline'} ${isCurrent ? 'text-teamax-gold' : isDone ? 'text-teamax-gold/80' : 'text-teamax-secondary'}`}>
                   {s.label}
                 </span>
               </button>
               {idx < steps.length - 1 && (
-                <ChevronRight className="h-3 w-3 text-teamax-gold/30 shrink-0" />
+                <ChevronRight className="h-3 w-3 text-teamax-gold/30 shrink-0 hidden min-[380px]:block" />
               )}
             </React.Fragment>
           );
@@ -610,10 +611,10 @@ const SmartOrderFlow: React.FC<SmartOrderFlowProps> = ({ product, onConfirm, onC
           </div>
           <div className="flex items-center justify-between text-xs text-teamax-secondary uppercase tracking-widest font-bold">
             <span>Quantity</span>
-            <div className="flex items-center gap-3 bg-black p-1 border border-teamax-gold/40">
+            <div className="rounded-xl flex items-center gap-3 bg-black p-1 border border-teamax-gold/40">
               <button
                 onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                className="p-1.5 hover:bg-teamax-gold hover:text-black transition-all active:scale-90 text-teamax-gold"
+                className="rounded-lg p-1.5 hover:bg-teamax-gold hover:text-black transition-all active:scale-90 text-teamax-gold"
                 aria-label="Decrease quantity"
               >
                 <Minus className="h-3.5 w-3.5" />
@@ -621,7 +622,7 @@ const SmartOrderFlow: React.FC<SmartOrderFlowProps> = ({ product, onConfirm, onC
               <span className="font-bold text-base min-w-[20px] text-center text-teamax-primary">{quantity}</span>
               <button
                 onClick={() => setQuantity(q => q + 1)}
-                className="p-1.5 hover:bg-teamax-gold hover:text-black transition-all active:scale-90 text-teamax-gold"
+                className="rounded-lg p-1.5 hover:bg-teamax-gold hover:text-black transition-all active:scale-90 text-teamax-gold"
                 aria-label="Increase quantity"
               >
                 <Plus className="h-3.5 w-3.5" />
@@ -662,7 +663,7 @@ const SmartOrderFlow: React.FC<SmartOrderFlowProps> = ({ product, onConfirm, onC
         <div className="flex items-center justify-between gap-3">
           <button
             onClick={handleBack}
-            className="mission-btn-outline px-5 sm:px-6 py-3.5 flex items-center gap-2"
+            className="mission-btn-outline shrink-0 px-4 sm:px-6 py-3.5 flex items-center gap-2"
           >
             <ChevronLeft className="h-4 w-4" />
             <span className="uppercase tracking-[0.2em] text-xs">{currentStepIndex === 0 ? 'Cancel' : 'Back'}</span>
@@ -672,12 +673,15 @@ const SmartOrderFlow: React.FC<SmartOrderFlowProps> = ({ product, onConfirm, onC
               onClick={handleConfirm}
               disabled={!canConfirm}
               aria-disabled={!canConfirm}
-              className={`mission-btn flex-1 px-4 sm:px-6 py-3.5 flex items-center justify-center gap-2 sm:gap-3 group relative overflow-hidden ${!canConfirm ? 'opacity-60 cursor-not-allowed pointer-events-none' : ''}`}
+              className={`mission-btn flex-1 min-w-0 px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-center gap-2 sm:gap-3 group relative overflow-hidden ${!canConfirm ? 'opacity-60 cursor-not-allowed pointer-events-none' : ''}`}
             >
               <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
-              <ShoppingCart className="h-5 w-5 shrink-0" />
-              <span className="uppercase tracking-[0.2em] text-xs whitespace-nowrap">Add to Order</span>
-              <span className="text-sm font-bold whitespace-nowrap">· ₱{grandTotal.toFixed(2)}</span>
+              <ShoppingCart className="h-5 w-5 shrink-0 hidden min-[400px]:block" />
+              {/* Label and price stack on narrow screens so neither gets clipped */}
+              <span className="flex flex-col sm:flex-row sm:items-center sm:gap-2 leading-tight min-w-0">
+                <span className="uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[11px] sm:text-xs whitespace-nowrap">Add to Order</span>
+                <span className="text-sm font-bold whitespace-nowrap tracking-normal"><span className="hidden sm:inline">· </span>₱{grandTotal.toFixed(2)}</span>
+              </span>
             </button>
           ) : (
             <button
